@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import UiLoader from '@/components/UiLoader.vue'
 import { useGlobalStore } from '@/stores/globalStore'
+import MobileBanner from '@/components/MobileBanner.vue'
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
 
 const globalStore = useGlobalStore();
+
+setTimeout(() => {
+  globalStore.splashLoading = false
+}, 2000)
 </script>
 
 <template>
   <div class="my-app">
-    <div class="global-loader" v-if="globalStore.isLoading">
+    <MobileBanner />
+    <div class="global-loader" v-if="globalStore.isLoading || globalStore.splashLoading">
       <UiLoader />
     </div>
-    <router-view />
+    <router-view v-if="width > 850"/>
   </div>
 </template>
 

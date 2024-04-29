@@ -185,6 +185,9 @@ window.scrollTo(0, 0)
 .hero__img {
   max-width: 650px;
   animation: zoomInOut 3s ease-in-out infinite;
+  @media (max-width: 1250px) {
+    max-width: 450px;
+  }
   @media (max-width: 1050px) {
     max-width: 350px;
   }

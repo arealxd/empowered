@@ -1,56 +1,56 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-// import coursesJson from '@/json/courses.json'
+import coursesJson from '@/json/courses.json'
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+// import axios from 'axios'
 
 const router = useRouter()
 const route = useRoute()
 
-const allCourses = ref()
+const allCourses = ref(coursesJson)
 
 const applyFilter = () => {
-  axios
-    .get('http://localhost:8080/api/public/course/all', {
-      params: {
-        sort: sort.value,
-        rating: rating.value,
-        hours: hours.value
-      }
-    })
-    .then((res) => {
-      allCourses.value = res.data.content
-      console.log(allCourses.value)
-      window.scrollTo(0, 0)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  // axios
+  //   .get('http://localhost:8080/api/public/course/all', {
+  //     params: {
+  //       sort: sort.value,
+  //       rating: rating.value,
+  //       hours: hours.value
+  //     }
+  //   })
+  //   .then((res) => {
+  //     allCourses.value = res.data.content
+  //     console.log(allCourses.value)
+  //     window.scrollTo(0, 0)
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //   })
 }
 
 window.scrollTo(0, 0)
 
 const getCourses = () => {
-  axios
-    .get('http://localhost:8080/api/public/course/all', {})
-    .then((res) => {
-      if (localStorage.getItem('searchResult') !== null && route.params.from === 'search') {
-        allCourses.value = JSON.parse(localStorage.getItem('searchResult'))
-      } else {
-        allCourses.value = res.data.content
-      }
-      localStorage.removeItem('searchResult')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  // axios
+  //   .get('http://localhost:8080/api/public/course/all', {})
+  //   .then((res) => {
+  //     if (localStorage.getItem('searchResult') !== null && route.params.from === 'search') {
+  //       allCourses.value = JSON.parse(localStorage.getItem('searchResult'))
+  //     } else {
+  //       allCourses.value = res.data.content
+  //     }
+  //     localStorage.removeItem('searchResult')
+  //   })
+  //   .catch((err) => {
+  //     console.log(err)
+  //   })
 }
 
 getCourses()
 
-const setSearchResult = (object) => {
+const setSearchResult = (object: any) => {
   allCourses.value = object
   localStorage.removeItem('searchResult')
 }
@@ -152,7 +152,7 @@ const resetFilter = () => {
             :key="i.id"
             @click="router.push('/details/' + i.id + '/' + 2)"
           >
-            <img :src="i.fileDto.url" alt="" />
+            <img :src="i.image" alt="" />
             <div class="course__info">
               <div class="course__info-title">
                 <p class="course__info-name">{{ i.title }}</p>
@@ -209,6 +209,9 @@ hr {
   flex-direction: column;
   gap: 20px;
   width: 250px;
+  select {
+    cursor: pointer;
+  }
   .courses__filter-title {
     display: flex;
     align-items: center;
