@@ -8,13 +8,18 @@ const { width } = useWindowSize()
 
 const globalStore = useGlobalStore();
 
-setTimeout(() => {
-  if (width.value > 850) {
+const setLoader = () => {
+  if (width.value < 850) {
     globalStore.isLoading = false
+    globalStore.splashLoading = false
     return
   }
-  globalStore.splashLoading = false
-}, 2000)
+  setTimeout(() => {
+    globalStore.splashLoading = false
+  }, 2000)
+}
+
+setLoader()
 </script>
 
 <template>
