@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
+const goMainTop = () => {
+  router.push('/')
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
 </script>
 
 <template>
@@ -22,7 +30,9 @@ const router = useRouter()
           </div>
         </div>
         <div class="footer__copyright">
-          <img class="footer__copyright-logo" src="/img/logo.png" alt="" />
+          <img class="footer__copyright-logo"
+               @click="goMainTop"
+               src="/img/logo.png" alt="" />
           <p class="footer__copyright-copyright">© 2024 EmpowerED.</p>
         </div>
       </div>
@@ -86,6 +96,13 @@ const router = useRouter()
     color: #ffffff;
     font-weight: 400;
     font-size: 12px;
+  }
+}
+.footer__copyright-logo {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
   }
 }
 </style>

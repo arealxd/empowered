@@ -278,10 +278,14 @@ hr {
     cursor: pointer;
     display: flex;
     gap: 15px;
+    &:hover {
+      -webkit-filter: drop-shadow(0px 0px 5px #fff);
+      filter: drop-shadow(0px 0px 5px #fff);
+    }
     img {
       width: 260px;
       height: 170px;
-      border-radius: 20px;
+      border-radius: 10px;
     }
     .course__info {
       display: flex;

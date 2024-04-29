@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 import { useRoute } from 'vue-router'
 import axios from 'axios'
-// import coursesJson from '@/json/courses.json'
+import coursesJson from '@/json/courses.json'
 import VideoPopup from '@/components/VideoPopup.vue'
 
 const route = useRoute()
-const course = ref()
+const course = computed(() => coursesJson.find((i) => i.id === Number(route.params.id)))
 
 window.scrollTo(0, 0)
 
@@ -60,16 +60,16 @@ const buy_post = () => {
 
 const showPopup = ref(false)
 
-const getCourseById = () => {
-  axios
-    .get(`http://localhost:8080/api/public/course/${route.params.id}`, {})
-    .then((res) => {
-      course.value = res.data
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
+// const getCourseById = () => {
+//   axios
+//     .get(`http://localhost:8080/api/public/course/${route.params.id}`, {})
+//     .then((res) => {
+//       course.value = res.data
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     })
+// }
 
 const getCourseToken = () => {
   axios
@@ -87,7 +87,7 @@ const getCourseToken = () => {
     })
 }
 
-getCourseById()
+// getCourseById()
 
 const myCourses = ref()
 
@@ -170,12 +170,12 @@ const postReview = () => {
             fill="white"
           />
         </svg>
-        <p v-if="route.params.from == 1" @click="router.push('/my-courses')">My courses</p>
-        <p v-else-if="route.params.from == 2" @click="router.push('/courses')">Courses</p>
-        <p v-else-if="route.params.from == 3">{{ course?.title }}</p>
+        <p v-if="Number(route.params.from) === 1" @click="router.push('/my-courses')">My courses</p>
+        <p v-else-if="Number(route.params.from) === 2" @click="router.push('/courses')">Courses</p>
+        <p v-else-if="Number(route.params.from) === 3">{{ course?.title }}</p>
         <p v-else>Courses</p>
         <svg
-          v-if="route.params.from != 3"
+          v-if="Number(route.params.from) !== 3"
           width="7"
           height="12"
           viewBox="0 0 7 12"
@@ -187,11 +187,11 @@ const postReview = () => {
             fill="white"
           />
         </svg>
-        <p v-if="route.params.from != 3">{{ course?.title }}</p>
+        <p v-if="Number(route.params.from) !== 3">{{ course?.title }}</p>
       </div>
       <div class="courses__preview">
         <div class="courses__preview-img">
-          <img :src="course?.fileDto?.url" alt="" />
+          <img :src="course?.image" alt="" />
           <div class="courses__preview-info-btns">
             <button
               class="courses__preview-info-btns-buy"
@@ -221,15 +221,14 @@ const postReview = () => {
         <div class="courses__preview-info">
           <div class="courses__preview-header">
             <p class="courses__preview-info-title">{{ course?.title }}</p>
-
             <p class="price" v-if="!buyed">{{ course?.price }} $</p>
           </div>
           <p class="author">
             Author: <span v-if="course?.author">{{ course?.author }}</span>
-            <span v-else>Course Lab</span>
+            <span v-else>EmpowerED</span>
           </p>
           <p class="language">
-            Language: <span>{{ course?.language }}</span>
+            Language: <span>{{ course?.courseLanguage }}</span>
           </p>
           <div class="hours">
             <p>{{ course?.totalHours }} total hours</p>
@@ -281,7 +280,7 @@ const postReview = () => {
           </div>
         </div>
       </div> -->
-      <div class="comments" v-if="(buyed && authorized) || course?.commentDtos?.length > 0">
+      <div class="comments" v-if="(buyed && authorized) || true">
         <div class="comments__show" @click="showReviews = !showReviews">
           <p class="comments__title">Course Reviews</p>
           <p>{{ showReviews ? '🔽' : '🔼' }}</p>
@@ -308,27 +307,29 @@ const postReview = () => {
           <button type="submit">Leave a review</button>
           <p class="success" v-if="successLeaveReview">Successfully sent</p>
         </form>
-        <div v-if="showReviews && course?.commentDtos?.length > 0">
-          <div
-            class="comments__comment"
-            v-for="(comment, index) in course?.commentDtos"
-            :key="index"
-          >
-            <div class="comments__comment-header">
-              <div class="comments__comment-header-user">
-                <img src="/img/user.png" alt="" />
-                <p>{{ comment?.createdBy?.fullName }}</p>
+        <TransitionGroup>
+          <div class="comments__list" v-if="showReviews && course?.reviews && course?.reviews?.length > 0">
+            <div
+              class="comments__comment"
+              v-for="(comment, index) in course?.reviews"
+              :key="index"
+            >
+              <div class="comments__comment-header">
+                <div class="comments__comment-header-user">
+                  <img src="/img/user.png" alt="" />
+                  <p>{{ comment?.name }}</p>
+                </div>
+                <div class="comments__comment-header-rating">
+                  <img src="/img/star.png" alt="" />
+                  <p>{{ comment?.rating }}</p>
+                </div>
               </div>
-              <div class="comments__comment-header-rating">
-                <img src="/img/star.png" alt="" />
-                <p>{{ comment?.rating }}</p>
-              </div>
+              <p class="comments__comment-text">
+                {{ comment?.comment }}
+              </p>
             </div>
-            <p class="comments__comment-text">
-              {{ comment?.text }}
-            </p>
-          </div>
         </div>
+        </TransitionGroup>
       </div>
       <p class="content__title" v-if="buyed">Course content</p>
       <div v-if="buyed">
@@ -412,7 +413,7 @@ const postReview = () => {
     transition: all 0.3s ease;
   }
   button:hover {
-    background: #4ea884;
+    background: #f6e800;
   }
   .success {
     font-weight: 500;
@@ -445,12 +446,16 @@ const postReview = () => {
   .comments__show p:hover {
     color: #569dff;
   }
+  .comments__list {
+    margin-top: 20px;
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  }
   .comments__comment {
     padding: 20px 30px;
     border: 1px solid #2e363c;
     border-radius: 30px;
-    margin-bottom: 30px;
-    margin-top: 20px;
     .comments__comment-header {
       display: flex;
       align-items: center;
@@ -483,6 +488,7 @@ const postReview = () => {
           font-weight: 700;
           font-size: 16px;
           color: #f0c800;
+          height: 20px;
         }
       }
     }
@@ -494,8 +500,7 @@ const postReview = () => {
   }
 }
 .courses {
-  padding: 30px 0px 0px 150px;
-  padding-bottom: 230px;
+  padding: 30px 0 150px 50px;
   display: flex;
   flex-direction: column;
   background: #383535;
@@ -550,7 +555,7 @@ const postReview = () => {
         transition: all 0.3s ease;
       }
       .courses__preview-info-btns-buy:hover {
-        background: #4ea884;
+        background: #f6e800;
       }
     }
   }
@@ -560,15 +565,19 @@ const postReview = () => {
     gap: 10px;
     padding-right: 100px;
     width: 100%;
+    @media (max-width: 1000px) {
+      padding-right: 30px;
+    }
     .courses__preview-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-
+      gap: 20px;
       .price {
         font-weight: 700;
         font-size: 25px;
         color: #1ae200;
+        white-space: nowrap;
       }
     }
     .courses__preview-info-title {
@@ -629,8 +638,7 @@ const postReview = () => {
   }
 }
 .content {
-  padding: 0px 150px 0px 150px;
-  padding-bottom: 200px;
+  padding: 0 0 200px 0;
   .content__learn {
     padding: 25px;
     border: 1px solid #2e363c;

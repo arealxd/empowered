@@ -1,146 +1,458 @@
 [
   {
     "id": 1,
-    "title": "Learn Vue 3",
-    "description": "Learn Vue 3 with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
+    "title": "Learn Machine Learning",
+    "description": "Learn Machine Learning with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Jack Nicholson",
     "image": "/img/course1.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 2,
-    "title": "Learn React",
-    "description": "Learn React with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
+    "title": "Learn Data Analysis",
+    "description": "Learn Data Analysis with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 80,
-    "author": "John Doe",
+    "author": "Alex Johnson",
     "image": "/img/course2.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 3,
-    "title": "Learn Angular",
-    "description": "Learn Angular with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
+    "title": "Learn 3D Animation",
+    "description": "Learn 3D Animation with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "David Parker",
     "image": "/img/course3.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 4,
-    "title": "Learn Node",
-    "description": "Learn Node with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
+    "title": "Learn Python",
+    "description": "Learn Python with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Peter Kavinsky",
     "image": "/img/course4.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 5,
-    "title": "Learn Express",
-    "description": "Learn Express with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
+    "title": "Learn Django",
+    "description": "Learn Django with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Lisa Simpson",
     "image": "/img/course5.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 6,
     "title": "Learn MongoDB",
     "description": "Learn MongoDB with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Nancy Wheeler",
     "image": "/img/course6.jpg",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 7,
     "title": "Learn GraphQL",
     "description": "Learn GraphQL with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Harry Kane",
     "image": "/img/course7.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "en"
+    "courseLanguage": "Deutsch, English, Español",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 8,
     "title": "Learn TypeScript",
     "description": "Learn TypeScript with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Michael Landon",
     "image": "/img/course8.jpg",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "en"
+    "courseLanguage": "French, English, Español",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 9,
     "title": "Learn JavaScript",
     "description": "Learn JavaScript with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Oliver Queen",
     "image": "/img/course9.jpg",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "en"
+    "courseLanguage": "English, Español",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 10,
     "title": "Learn HTML",
     "description": "Learn HTML with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Yoda Skywalker",
     "image": "/img/course10.jpg",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "en"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 11,
     "title": "Learn CSS",
     "description": "Learn CSS with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Walter White",
     "image": "/img/course11.jpg",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   },
   {
     "id": 12,
     "title": "Learn SASS",
     "description": "Learn SASS with the best teachers. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.",
     "price": 100,
-    "author": "John Doe",
+    "author": "Elena Gilbert",
     "image": "/img/course12.png",
     "rating": 4.5,
     "totalHours": 10,
     "lecturesQuantity": 37,
-    "courseLanguage": "English"
+    "courseLanguage": "English, Español",
+    "reviews": [
+      {
+        "id": 1,
+        "name": "Sam Smith",
+        "rating": 5.0,
+        "comment": "I really enjoyed this course!"
+      },
+      {
+        "id": 2,
+        "name": "David Johnson",
+        "rating": 4.5,
+        "comment": "Great course!, I learned a lot!"
+      },
+      {
+        "id": 3,
+        "name": "Sarah Brown",
+        "rating": 4.0,
+        "comment": "I liked the course, in general, it was good."
+      },
+      {
+        "id": 4,
+        "name": "Brax Johnson",
+        "rating": 3.5,
+        "comment": "I didn't like the course, I think it could be better."
+      }
+    ]
   }
 ]

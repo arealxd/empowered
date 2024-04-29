@@ -4,14 +4,13 @@ import FooterC from '@/components/FooterC.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-// import coursesJson from '@/json/courses.json'
-import axios from 'axios'
+import coursesJson from '@/json/courses.json'
 
 if (localStorage.getItem('user') === 'ADMIN' || localStorage.getItem('user') === 'TEACHER') {
   router.push('/panel')
 }
 
-const courses = ref()
+const courses = ref(coursesJson)
 
 const firstIndex = ref(0)
 const secondIndex = ref(1)
@@ -19,7 +18,7 @@ const thirdIndex = ref(2)
 const fourthIndex = ref(3)
 
 const nextCourse = () => {
-  if (thirdIndex.value === courses.value.length - 1) {
+  if (fourthIndex.value === courses.value.length - 1) {
     firstIndex.value = 0
     secondIndex.value = 1
     thirdIndex.value = 2
@@ -48,14 +47,14 @@ const previousCourse = () => {
 
 window.scrollTo(0, 0)
 
-axios
-  .get('http://localhost:8080/api/public/course/all', {})
-  .then((res) => {
-    courses.value = res.data.content
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+// axios
+//   .get('http://localhost:8080/api/public/course/all', {})
+//   .then((res) => {
+//     courses.value = res.data.content
+//   })
+//   .catch((err) => {
+//     console.log(err)
+//   })
 </script>
 
 <template>
@@ -83,7 +82,7 @@ axios
       <div class="rec__list" v-if="courses?.length > 0">
         <img
           @click="previousCourse"
-          v-if="courses?.length > 4"
+          v-if="courses?.length > 4 && false"
           src="/img/button-left.png"
           class="arrow"
           alt=""
@@ -94,7 +93,7 @@ axios
             v-if="courses.length > 0"
             @click="router.push('/details/' + courses[firstIndex].id + '/' + 3)"
           >
-            <img :src="courses[firstIndex]?.fileDto?.url" alt="" />
+            <img :src="courses[firstIndex]?.image" alt="" />
             <p class="course__name">{{ courses[firstIndex]?.title }}</p>
             <p class="course__author">{{ courses[firstIndex]?.author }}</p>
           </div>
@@ -103,7 +102,7 @@ axios
             v-if="courses.length > 1"
             @click="router.push('/details/' + courses[secondIndex].id + '/' + 3)"
           >
-            <img :src="courses[secondIndex]?.fileDto?.url" alt="" />
+            <img :src="courses[secondIndex]?.image" alt="" />
             <p class="course__name">{{ courses[secondIndex].title }}</p>
             <p class="course__author">{{ courses[secondIndex].author }}</p>
           </div>
@@ -112,7 +111,7 @@ axios
             v-if="courses.length > 2"
             @click="router.push('/details/' + courses[thirdIndex].id + '/' + 3)"
           >
-            <img :src="courses[thirdIndex]?.fileDto?.url" alt="" />
+            <img :src="courses[thirdIndex]?.image" alt="" />
             <p class="course__name">{{ courses[thirdIndex]?.title }}</p>
             <p class="course__author">{{ courses[thirdIndex]?.author }}</p>
           </div>
@@ -121,14 +120,23 @@ axios
             v-if="courses.length > 3"
             @click="router.push('/details/' + courses[fourthIndex].id + '/' + 3)"
           >
-            <img :src="courses[fourthIndex]?.fileDto?.url" alt="" />
+            <img :src="courses[fourthIndex]?.image" alt="" />
             <p class="course__name">{{ courses[fourthIndex]?.title }}</p>
             <p class="course__author">{{ courses[fourthIndex]?.author }}</p>
+          </div>
+          <div
+            class="course"
+            v-if="courses.length > 3"
+            @click="router.push('/details/' + courses[fourthIndex].id + '/' + 3)"
+          >
+            <img :src="courses[4]?.image" alt="" />
+            <p class="course__name">{{ courses[4]?.title }}</p>
+            <p class="course__author">{{ courses[4]?.author }}</p>
           </div>
         </div>
         <img
           @click="nextCourse"
-          v-if="courses?.length > 4"
+          v-if="courses?.length > 4 && false"
           src="/img/button-left.png"
           class="arrow arrow-rotate"
           alt=""
@@ -160,6 +168,9 @@ axios
   line-height: 1;
   color: #F2C94C;
   max-width: 700px;
+  @media (max-width: 1050px) {
+    font-size: 40px;
+  }
 }
 .hero__content-description {
   font-weight: 400;
@@ -173,7 +184,24 @@ axios
 
 .hero__img {
   max-width: 650px;
+  animation: zoomInOut 3s ease-in-out infinite;
+  @media (max-width: 1050px) {
+    max-width: 350px;
+  }
 }
+
+@keyframes zoomInOut {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .hero__content-getstarted {
   padding: 15px 48px;
   font-weight: 500;
@@ -234,26 +262,36 @@ axios
   }
   .arrow {
     cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+      -webkit-filter: drop-shadow(0px 0px 5px #fff);
+      filter: drop-shadow(0px 0px 5px #fff);
+    }
   }
   .arrow-rotate {
     transform: rotate(180deg);
   }
   .rec__courses {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
     width: 100%;
-    gap: 10px;
-    justify-content: space-around;
-    padding: 0px 20px;
   }
   .course {
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    &:hover {
+      -webkit-filter: drop-shadow(0px 0px 5px #fff);
+      filter: drop-shadow(0px 0px 5px #fff);
+    }
     img {
-      width: 230px;
+      width: 100%;
+      object-fit: cover;
       height: 130px;
-      border-radius: 20px;
+      border-radius: 10px;
     }
     .course__name {
       font-weight: 700;

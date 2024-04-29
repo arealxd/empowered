@@ -69,6 +69,9 @@ window.scrollTo(0, 0)
     font-size: 40px;
     line-height: normal;
     color: #ffffff;
+    @media (max-width: 1000px) {
+      font-size: 30px;
+    }
   }
   span {
     color: #F2C94C;
@@ -97,6 +100,9 @@ window.scrollTo(0, 0)
   }
   img {
     max-width: 600px;
+    @media (max-width: 1200px) {
+      max-width: 350px;
+    }
   }
 }
 .info {
