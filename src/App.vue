@@ -9,6 +9,10 @@ const { width } = useWindowSize()
 const globalStore = useGlobalStore();
 
 setTimeout(() => {
+  if (width.value > 850) {
+    globalStore.isLoading = false
+    return
+  }
   globalStore.splashLoading = false
 }, 2000)
 </script>
