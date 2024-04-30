@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
+import { useGlobalStore } from '@/stores/globalStore'
 import { useToast } from 'vue-toastification'
+import router from '@/router'
 
+const globalStore = useGlobalStore()
 const toast = useToast()
 const emit = defineEmits(['forgot', 'signup'])
 
@@ -39,26 +41,18 @@ const doLogin = () => {
   } else {
     emailError.value = false
   }
-  axios
-    .post('http://localhost:8080/api/auth/login', {
-      email: email.value,
-      password: password.value
-    })
-    .then((response) => {
-      console.log(response)
-      localStorage.setItem('token', response.data.accessToken)
-      localStorage.setItem('user', response.data.roles[0])
-      toast.clear()
-      toast.success('Logged in successfully')
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000)
-    })
-    .catch((error) => {
-      console.log(error)
-      toast.clear()
-      toast.error('Wrong email or password')
-    })
+  if (localStorage.getItem('email') === email.value && localStorage.getItem('password') === password.value) {
+    localStorage.setItem('isAuth', 'true')
+    globalStore.isAuth = true
+    toast.clear()
+    toast.success('Logged in successfully')
+    router.push('/')
+  } else {
+    toast.clear()
+    toast.error('Invalid email or password')
+    emailError.value = true
+    passwordError.value = true
+  }
 }
 </script>
 

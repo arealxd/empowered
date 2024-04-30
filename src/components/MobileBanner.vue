@@ -6,6 +6,7 @@ const { width } = useWindowSize()
 
 <template>
   <div v-if="width < 850" class="mobile-banner">
+    <img class="mobile-banner-logo" src="/img/logo.png" alt="logo">
     <p class="mobile-banner-title">
       Website available only on PC and Laptop. Download our app to use it on your mobile phone.
     </p>
@@ -31,11 +32,15 @@ const { width } = useWindowSize()
   z-index: 1000;
   min-height: 100vh;
   min-width: 100vw;
+  .mobile-banner-logo {
+    width: fit-content;
+    margin-top: 30%;
+    margin-bottom: 30px;
+  }
   .mobile-banner-title {
     font-size: 25px;
     font-weight: 600;
     text-align: center;
-    margin-top: 50%;
     margin-bottom: 20px;
     max-width: 90%;
   }

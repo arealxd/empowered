@@ -63,9 +63,7 @@ const createTeacher = () => {
 }
 
 const onDateInput = (event: any) => {
-  // Remove non-numeric characters from the input
   const cleanedInput = event.target.value.replace(/\D/g, '')
-  // Format the input as a date (DD/MM/YYYY)
   if (cleanedInput.length <= 2) {
     dateOfBirth.value = cleanedInput
   } else if (cleanedInput.length <= 4) {

@@ -1,28 +1,29 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-// import coursesJson from '@/json/courses.json'
-import { ref } from 'vue'
+import coursesJson from '@/json/courses.json'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { useGlobalStore } from '@/stores/globalStore'
+
+const globalStore = useGlobalStore()
 const router = useRouter()
+const coursesList = ref(coursesJson)
+const myCourses = computed(() => {
+  return coursesList.value.filter((i) => globalStore.myCourses?.includes(i.id))
+})
 
-const myCourses = ref()
+const addLocalToGlobal = () => {
+  globalStore.isLoading = true
+  if (!!localStorage.getItem('myCourses')) {
+    globalStore.myCourses = localStorage.getItem('myCourses')?.split(',').map(Number)
+    console.log(globalStore.myCourses)
+  }
+  globalStore.isLoading = false
+}
 
+addLocalToGlobal()
 window.scrollTo(0, 0)
-
-axios
-  .get('http://localhost:8080/api/user/myCourses', {
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token')
-    }
-  })
-  .then((res) => {
-    myCourses.value = res.data.content
-  })
-  .catch((err) => {
-    console.log(err)
-  })
 </script>
 
 <template>
@@ -31,14 +32,20 @@ axios
     <div class="courses">
       <p>My courses</p>
       <div class="courses__content">
-        <div class="courses__list">
+        <div v-if="!globalStore.myCourses || globalStore.myCourses?.length === 0" class="courses__empty">
+          <p class="courses__empty--title">
+            You haven't bought any courses yet
+          </p>
+          <img src="/img/empty-cart.png" alt="empty">
+        </div>
+        <div v-else class="courses__list">
           <div
             class="courses__list-course"
             v-for="(i, index) in myCourses"
             :key="index"
             @click="router.push('/details/' + i?.id + '/' + 1)"
           >
-            <img :src="i?.fileDto?.url" alt="" />
+            <img :src="i?.image" alt="" />
             <div class="course__info">
               <p class="course__info-name">{{ i.title }}</p>
               <p class="course__info-description">{{ i.description }}</p>
@@ -65,10 +72,6 @@ axios
               </div>
             </div>
           </div>
-          <div class="havent-buy" v-if="myCourses?.length === 0">
-            <p>You haven't bought the course yet</p>
-            <button @click="router.push('/courses')">View Courses</button>
-          </div>
         </div>
       </div>
     </div>
@@ -78,26 +81,42 @@ axios
 
 <style scoped lang="scss">
 .courses {
-  padding: 20px 150px;
-  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   p {
     font-weight: 700;
-    font-size: 40px;
+    font-size: 35px;
     color: #ffffff;
   }
 }
 .courses__content {
   display: flex;
-  margin-top: 0px;
+  margin-top: 0;
   gap: 40px;
+}
+.courses__empty {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 15vh;
+  margin-bottom: 30vh;
+  p {
+    font-weight: 700;
+    font-size: 22px;
+    color: #bdbdbd;
+  }
+  img {
+    max-width: 180px;
+  }
 }
 .courses__list {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  margin-top: 40px;
+  margin-top: 25px;
+  margin-bottom: 200px;
   .courses__list-course {
     cursor: pointer;
     display: flex;

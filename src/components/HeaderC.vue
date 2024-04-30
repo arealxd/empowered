@@ -1,72 +1,36 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
-import {useFetcher} from "@/composables/useFetcher"
+import { useGlobalStore } from '@/stores/globalStore'
 
-const {getData, postData, loading, error} = useFetcher()
+const globalStore = useGlobalStore()
 const router = useRouter()
 const route = useRoute()
 
-const emit = defineEmits(['signup', 'login'])
-const token = localStorage.getItem('token')
-
+const showProfile = ref(false)
 const searchValue = ref('')
-const searchResult = ref()
-
-const getItems = () => {
-  getData("/todos/1")
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-}
-
-getItems()
 
 const doSearch = () => {
-  axios
-    .get(`http://localhost:8080/api/public/course/search?title=${searchValue.value}`, {})
-    .then((res) => {
-      searchResult.value = res.data.content
-      searchValue.value = ''
-      localStorage.setItem('searchResult', JSON.stringify(searchResult.value))
-      router.push('/courses/search')
-      emit('searchResult', searchResult.value)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  // if (searchValue.value === '') {
+  //   router.push('/courses')
+  //   return
+  // }
+  router.push(`/courses/search?find=${searchValue.value}`)
 }
-
-const login = ref(false)
-const signup = ref(false)
-const showProfile = ref(false)
 
 const goHome = () => {
   router.push('/')
-  login.value = false
-  signup.value = false
 }
 
 const goCourses = () => {
   router.push('/courses')
-  emit('all-courses')
-  login.value = false
-  signup.value = false
 }
 
 const goProfile = () => {
-  if (localStorage.getItem('token') === null) {
-    router.push('/auth')
-    login.value = true
-    signup.value = false
+  if (globalStore.isAuth || localStorage.getItem('isAuth') === 'true') {
+    showProfile.value = !showProfile.value
   } else {
-    showProfile.value = true
-    login.value = false
-    signup.value = false
+    router.push('/auth')
   }
 }
 
@@ -74,49 +38,18 @@ const toggleLogin = () => {
   if (route.path !== '/auth') {
     router.push('/auth')
   }
-  login.value = true
-  signup.value = false
-  emit('login')
 }
-
-// const toggleSignup = () => {
-//   signup.value = true
-//   login.value = false
-//   emit('signup')
-// }
 
 const logout = () => {
   localStorage.clear()
+  globalStore.isAuth = false
   router.push('/auth')
-  login.value = false
-  signup.value = false
+}
+
+const openMyCourses = () => {
   showProfile.value = false
+  router.push('/my-courses')
 }
-
-const fullName = ref('')
-const email = ref('')
-
-const getProfile = () => {
-  axios
-    .get('http://localhost:8080/api/user/myProfile', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    .then((res) => {
-      fullName.value = res.data.fullName
-      email.value = res.data.email
-    })
-    .catch((err) => {
-      console.log(err)
-      if (err.response.status === 401) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-      }
-    })
-}
-
-getProfile()
 </script>
 
 <template>
@@ -136,26 +69,31 @@ getProfile()
           />
           <input type="submit" hidden />
         </form>
-        <img src="/img/profile_icon.png" @click="goProfile" class="header__profile" alt="" />
-        <div class="profile-popup" v-if="showProfile">
-          <img src="/img/userAva.png" alt="" />
-          <p class="user-name">{{ fullName }}</p>
-          <p class="user-email">{{ email }}</p>
-          <hr />
-          <div class="notification" @click="router.push('/my-courses')">
-            <img src="/img/learning.png" alt="" />
-            <p class="notification-text">My courses</p>
+        <img src="/img/profile_icon.png"
+             v-if="globalStore.isAuth"
+             @click="goProfile"
+             class="header__profile"
+             alt="user" />
+        <Transition>
+          <div class="profile-popup" v-if="showProfile">
+            <img src="/img/userAva.png" alt="" />
+            <p class="user-name">{{ globalStore.fullName }}</p>
+            <p class="user-email">{{ globalStore.email }}</p>
+            <hr />
+            <div class="notification" @click="openMyCourses">
+              <img src="/img/learning.png" alt="" />
+              <p class="notification-text">My courses</p>
+            </div>
+            <p class="edit-profile" @click="router.push('/edit-profile')">Edit profile</p>
+            <p class="logout-profile" @click="logout">Logout</p>
           </div>
-          <p class="edit-profile" @click="router.push('/edit-profile')">Edit profile</p>
-          <p class="logout-profile" @click="logout">Logout</p>
-        </div>
-        <button to="/courses" class="header__login" @click="toggleLogin" v-if="!token">
+        </Transition>
+        <button class="header__login"
+                @click="toggleLogin"
+                v-if="!globalStore.isAuth">
           Log in
         </button>
-        <!-- :class="{ 'header__auth-active': login }" -->
-
         <button
-          to="/about"
           class="header__login header__auth-active about"
           @click="router.push('/about')"
         >
@@ -164,7 +102,7 @@ getProfile()
       </div>
     </div>
   </div>
-  <div v-if="showProfile" @click="showProfile = false" class="cover_dark"></div>
+  <div v-if="showProfile" @click="showProfile = false" class="cover_dark" />
 </template>
 
 <style scoped lang="scss">
@@ -200,6 +138,7 @@ getProfile()
 
 .header__search-form {
   width: 100%;
+  margin-right: 30px;
 }
 .header__search {
   font-family: 'Roboto', FontAwesome;
@@ -218,7 +157,7 @@ getProfile()
   font-size: 14px;
 }
 .header__profile {
-  margin: 0 20px 0 30px;
+  margin: 0;
   cursor: pointer;
   filter: brightness(0) saturate(100%) invert(96%) sepia(56%) saturate(5110%) hue-rotate(320deg) brightness(103%) contrast(90%);
   &:hover {
@@ -231,15 +170,15 @@ getProfile()
   background: #ffffff;
   box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.06);
   border-radius: 20px;
-  z-index: 10;
-  right: 70px;
+  z-index: 9999;
+  right: 0;
   top: 75px;
   text-align: center;
 }
 .cover_dark {
   background: #000000;
   opacity: 0.5;
-  z-index: 9;
+  z-index: 999;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -266,9 +205,10 @@ hr {
 .notification {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-top: 24px;
+  gap: 10px;
+  margin: 24px auto 0;
   cursor: pointer;
+  width: fit-content;
 }
 
 .notification img {
@@ -291,7 +231,7 @@ hr {
 }
 
 .edit-profile {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 15px;
   color: #ffffff;
   padding: 8px 0px;
@@ -299,8 +239,7 @@ hr {
   max-width: 155px;
   background: #009580;
   border-radius: 12px;
-  margin: 0 auto;
-  margin-top: 25px;
+  margin: 25px auto 0;
   cursor: pointer;
   transition: all 0.3s ease-out;
 }
@@ -310,7 +249,7 @@ hr {
 }
 
 .logout-profile {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 15px;
   color: #ffffff;
   padding: 8px 0px;
@@ -336,7 +275,6 @@ hr {
   border: 1px solid #F2C94C;
   border-radius: 30px;
   background: #0d0d0d;
-  margin-right: 8px;
   transition: all 0.3s ease;
   white-space: nowrap;
 }
@@ -357,6 +295,9 @@ hr {
 
 .header__my-courses:hover {
   background: #fff600;
+}
+.about {
+  margin-left: 20px;
 }
 .about:hover {
   background: #fff600;

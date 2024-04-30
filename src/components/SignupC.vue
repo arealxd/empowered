@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import axios from 'axios'
 import { useToast} from 'vue-toastification'
+import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const toast = useToast()
 const emit = defineEmits(['forgot', 'login'])
 const fullName = ref('')
@@ -57,28 +58,21 @@ const doSignup = () => {
   } else {
     dateOfBirthError.value = false
   }
-  axios
-    .post('http://localhost:8080/api/auth/register', {
-      fullName: fullName.value,
-      dateOfBirth: dateOfBirth.value,
-      email: email.value,
-      password: password.value,
-      matchingPassword: password.value
-    })
-    .then((response) => {
-      console.log(response)
-      localStorage.setItem('fullName', fullName.value)
-      localStorage.setItem('dateOfBirth', dateOfBirth.value)
-      localStorage.setItem('email', email.value)
-      emit('login')
-      toast.clear()
-      toast.success('Successfully registered')
-    })
-    .catch((error) => {
-      console.log(error)
-      toast.clear()
-      toast.error('Email is busy or invalid email')
-    })
+  if (localStorage.getItem('email') === email.value) {
+    toast.clear()
+    toast.error('Email is busy')
+    return
+  }
+  globalStore.fullName = fullName.value
+  globalStore.dateOfBirth = dateOfBirth.value
+  globalStore.email = email.value
+  localStorage.setItem('fullName', fullName.value)
+  localStorage.setItem('dateOfBirth', dateOfBirth.value)
+  localStorage.setItem('email', email.value)
+  localStorage.setItem('password', password.value)
+  emit('login')
+  toast.clear()
+  toast.success('Signed up successfully')
 }
 </script>
 

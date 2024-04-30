@@ -2,77 +2,75 @@
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
 import coursesJson from '@/json/courses.json'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-// import axios from 'axios'
-
-const router = useRouter()
-const route = useRoute()
-
-const allCourses = ref(coursesJson)
-
-const applyFilter = () => {
-  // axios
-  //   .get('http://localhost:8080/api/public/course/all', {
-  //     params: {
-  //       sort: sort.value,
-  //       rating: rating.value,
-  //       hours: hours.value
-  //     }
-  //   })
-  //   .then((res) => {
-  //     allCourses.value = res.data.content
-  //     console.log(allCourses.value)
-  //     window.scrollTo(0, 0)
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   })
-}
 
 window.scrollTo(0, 0)
+const router = useRouter()
+const route = useRoute()
+const sort = ref()
+const rating = ref()
+const hours = ref()
+
+const jsonCourses = coursesJson
+const allCourses = ref(coursesJson)
+const searchResult = ref([] as typeof coursesJson)
+
+const applyFilter = () => {
+}
 
 const getCourses = () => {
-  // axios
-  //   .get('http://localhost:8080/api/public/course/all', {})
-  //   .then((res) => {
-  //     if (localStorage.getItem('searchResult') !== null && route.params.from === 'search') {
-  //       allCourses.value = JSON.parse(localStorage.getItem('searchResult'))
-  //     } else {
-  //       allCourses.value = res.data.content
-  //     }
-  //     localStorage.removeItem('searchResult')
-  //   })
-  //   .catch((err) => {
-  //     console.log(err)
-  //   })
 }
 
 getCourses()
 
-const setSearchResult = (object: any) => {
-  allCourses.value = object
-  localStorage.removeItem('searchResult')
+const setSearchResult = () => {
+  allCourses.value = jsonCourses
+  if (route.query.find && route.query.find.toString().length > 0) {
+    const filteredCourses = allCourses.value.filter((course: any) =>
+      course.title.toLowerCase().includes(route.query.find?.toString().toLowerCase())
+    );
+    searchResult.value = filteredCourses;
+    allCourses.value = filteredCourses;
+  } else {
+    searchResult.value = [];
+    allCourses.value = jsonCourses;
+  }
 }
 
-const sort = ref()
-const rating = ref()
-const hours = ref()
+
+const querySearch = computed(() => {
+  return route.query.find
+})
+
+watch(querySearch, () => {
+  if (route.query.find) {
+    setSearchResult()
+  } else {
+    allCourses.value = jsonCourses
+    router.push('/courses')
+  }
+}, { immediate: true })
+
+
 
 const resetFilter = () => {
   sort.value = undefined
   rating.value = undefined
   hours.value = undefined
   getCourses()
-  window.scrollTo(0, 0)
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
 }
 </script>
 
 <template>
-  <HeaderC @searchResult="setSearchResult" @all-courses="getCourses" />
+  <HeaderC />
   <div class="container">
     <div class="courses">
-      <p>Courses</p>
+      <p class="courses-title">{{ route.query.find ? `Results for «${route.query.find}»` : "All courses"  }}</p>
       <div class="courses__content">
         <div class="courses__filter">
           <div class="courses__filter-title">
@@ -88,7 +86,6 @@ const resetFilter = () => {
                 fill="#E0E1E3"
               />
             </svg>
-
             <p>Filter</p>
           </div>
           <hr />
@@ -99,21 +96,6 @@ const resetFilter = () => {
               <option value="HIGH_RATING">High rating</option>
               <option value="NEW">New</option>
             </select>
-            <!-- <select class="courses__filter-sort">
-              <option selected hidden>Topic</option>
-              <option value="en">JavaScript</option>
-              <option value="ru">PHP</option>
-              <option value="kz">Laravel</option>
-              <option value="kz">Flutter</option>
-              <option value="kz">Java</option>
-              <option value="kz">Python</option>
-              <option value="kz">Node.Js</option>
-              <option value="kz">С++</option>
-              <option value="kz">Golang</option>
-              <option value="kz">UX/UI Design</option>
-              <option value="kz">Mathematics</option>
-              <option value="kz">Physics</option>
-            </select> -->
             <select class="courses__filter-sort" v-model="rating">
               <option :value="undefined" selected hidden>Rating</option>
               <option value="5">5.0</option>
@@ -127,23 +109,15 @@ const resetFilter = () => {
               <option value="SIX_TO_SEVENTEEN">6-17 hours</option>
               <option value="MORE_SEVENTEEN">17+ hours</option>
             </select>
-            <!-- <select class="courses__filter-sort">
-              <option selected hidden>Price</option>
-              <option value="paid">Paid</option>
-              <option value="free">Free</option>
-            </select> -->
-            <!-- <select class="courses__filter-sort">
-              <option selected hidden>Language</option>
-              <option value="en">English</option>
-              <option value="ru">Руский</option>
-              <option value="kz">Қазақша</option>
-            </select> -->
             <button type="submit" class="courses__filter-apply">Apply</button>
             <button type="button" @click="resetFilter" class="courses__filter-apply">Reset</button>
           </form>
         </div>
-        <div class="not-found" v-if="allCourses?.length === 0">
-          <h1>Courses not found</h1>
+        <div class="not-found" v-if="route.query.find && searchResult.length === 0">
+          <h1>{{ `Oops! We couldn't find any courses matching your search for «${route.query.find}»` }}</h1>
+        </div>
+        <div class="not-found" v-else-if="allCourses.length === 0">
+          <h1>The list of courses is currently empty. Please try again later.</h1>
         </div>
         <div class="courses__list" v-else>
           <div
@@ -265,9 +239,9 @@ hr {
   padding: 20px 0 100px 0;
   display: flex;
   flex-direction: column;
-  p {
+  .courses-title {
     font-weight: 700;
-    font-size: 40px;
+    font-size: 35px;
     color: #ffffff;
   }
 }
@@ -355,6 +329,8 @@ hr {
   justify-content: center;
   h1 {
     color: #acacac;
+    text-align: center;
+    width: 70%;
   }
 }
 </style>

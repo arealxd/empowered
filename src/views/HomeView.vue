@@ -45,16 +45,14 @@ const previousCourse = () => {
   }
 }
 
-window.scrollTo(0, 0)
+const scrollTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
 
-// axios
-//   .get('http://localhost:8080/api/public/course/all', {})
-//   .then((res) => {
-//     courses.value = res.data.content
-//   })
-//   .catch((err) => {
-//     console.log(err)
-//   })
+scrollTop()
 </script>
 
 <template>

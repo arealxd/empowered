@@ -2,64 +2,72 @@
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
 import { ref, watch } from 'vue'
-import axios from 'axios'
+import { useToast } from 'vue-toastification'
+import { useGlobalStore } from '@/stores/globalStore'
 
-axios
-  .get('http://localhost:8080/api/user/myProfile', {
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token')
-    }
-  })
-  .then((res) => {
-    fullName.value = res.data.fullName
-    email.value = res.data.email
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-
+const globalStore = useGlobalStore()
+const toast = useToast()
 const fullName = ref<any>(localStorage.getItem('fullName'))
-const dateOfBirth = ref<any>('31.07.2000')
+const dateOfBirth = ref<any>(localStorage.getItem('dateOfBirth'))
 const email = ref<any>(localStorage.getItem('email'))
 const password = ref('')
 const confirmPassword = ref('')
-
-const editProfile = () => {
-  axios
-    .put(
-      'http://localhost:8080/api/user/update',
-      {
-        fullName: fullName.value,
-        dateOfBirth: dateOfBirth.value,
-        email: email.value,
-        password: password.value,
-        matchingPassword: password.value
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then((res) => {
-      console.log(res)
-      successfullySaved.value = true
-      setTimeout(() => {
-        successfullySaved.value = false
-        password.value = ''
-        confirmPassword.value = ''
-      }, 1500)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
 const mismatch = ref(false)
-const successfullySaved = ref(false)
 const activeBtn = ref(true)
 
-watch(confirmPassword, () => {
+const editProfile = () => {
+  if (localStorage.getItem('fullName') === fullName.value && localStorage.getItem('dateOfBirth') === dateOfBirth.value && localStorage.getItem('email') === email.value && password.value === '') {
+    toast.clear()
+    toast.warning('No changes were made!')
+    return
+  }
+  if (fullName.value === '') {
+    toast.clear()
+    toast.error('Please enter your full name!')
+    return
+  }
+  if (dateOfBirth.value === '') {
+    toast.clear()
+    toast.error('Please enter your date of birth!')
+    return
+  }
+  if (email.value === '') {
+    toast.clear()
+    toast.error('Please enter your email address!')
+    return
+  }
+  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
+  if (!emailPattern.test(email.value)) {
+    toast.clear()
+    toast.error('Please enter a valid email address!')
+    return
+  }
+  if (dateOfBirth.value.length !== 10) {
+    toast.clear()
+    toast.error('Please enter a valid date of birth!')
+    return
+  }
+  if (password.value !== '' && password.value.length < 6) {
+    toast.clear()
+    toast.error('Password must be at least 6 characters!')
+    return
+  }
+  globalStore.fullName = fullName.value
+  globalStore.dateOfBirth = dateOfBirth.value
+  globalStore.email = email.value
+  localStorage.setItem('fullName', fullName.value)
+  localStorage.setItem('dateOfBirth', dateOfBirth.value)
+  localStorage.setItem('email', email.value)
+  if (password.value) {
+    localStorage.setItem('password', password.value)
+  }
+  password.value = ''
+  confirmPassword.value = ''
+  toast.clear()
+  toast.success('Profile updated successfully!')
+}
+
+watch([password, confirmPassword], () => {
   if (password.value !== confirmPassword.value) {
     mismatch.value = true
     activeBtn.value = false
@@ -70,9 +78,7 @@ watch(confirmPassword, () => {
 })
 
 const onDateInput = (event: any) => {
-  // Remove non-numeric characters from the input
   const cleanedInput = event.target.value.replace(/\D/g, '')
-  // Format the input as a date (DD/MM/YYYY)
   if (cleanedInput.length <= 2) {
     dateOfBirth.value = cleanedInput
   } else if (cleanedInput.length <= 4) {
@@ -83,7 +89,10 @@ const onDateInput = (event: any) => {
   }
 }
 
-window.scrollTo(0, 0)
+window.scrollTo({
+  top: 0,
+  behavior: 'smooth'
+})
 </script>
 
 <template>
@@ -93,7 +102,7 @@ window.scrollTo(0, 0)
       <p>Edit profile</p>
     </div>
     <form @submit.prevent="editProfile" class="edit-form">
-      <div class="edit" v-auto-animate="{ duration: 500 }">
+      <div class="edit">
         <div class="edit-blocks">
           <div class="edit-input">
             <p>Full name</p>
@@ -112,7 +121,7 @@ window.scrollTo(0, 0)
         <div class="edit-blocks">
           <div class="edit-input">
             <p>Email address</p>
-            <input type="email" v-model="email" placeholder="Email address" />
+            <input type="text" v-model="email" placeholder="Email address" />
           </div>
           <div class="edit-input">
             <p>Password (optional)</p>
@@ -125,7 +134,6 @@ window.scrollTo(0, 0)
         </div>
       </div>
       <p class="password_mismatch" v-if="mismatch">Password mismatch!</p>
-      <p class="successfully_saved" v-if="successfullySaved">Successfully saved</p>
       <button type="submit" v-if="activeBtn">Save</button>
       <button type="button" v-else>Save</button>
     </form>
@@ -135,8 +143,7 @@ window.scrollTo(0, 0)
 
 <style scoped lang="scss">
 .edit-view {
-  padding: 20px 150px;
-  padding-bottom: 200px;
+  padding: 20px 150px 200px;
 }
 .edit-profile {
   display: flex;
@@ -215,14 +222,6 @@ window.scrollTo(0, 0)
   color: red;
   font-size: 15px;
   font-weight: 700;
-  margin: 0 auto;
-  margin: -10px auto;
-}
-.successfully_saved {
-  color: rgb(31, 187, 0);
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 auto;
   margin: -10px auto;
 }
 </style>
