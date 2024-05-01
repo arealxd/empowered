@@ -3,159 +3,133 @@ import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-const router = useRouter()
 import { useRoute } from 'vue-router'
-import axios from 'axios'
+import { useGlobalStore } from '@/stores/globalStore'
+import { useToast } from 'vue-toastification'
+import { vMaska } from "maska"
 import coursesJson from '@/json/courses.json'
 import VideoPopup from '@/components/VideoPopup.vue'
 
+const toast = useToast()
+const globalStore = useGlobalStore()
+const router = useRouter()
 const route = useRoute()
-const course = computed(() => coursesJson.find((i) => i.id === Number(route.params.id)))
-
-window.scrollTo(0, 0)
-
-const buyed = ref(false)
-
+const course = ref(coursesJson.find((i) => i.id === Number(route.params.id)))
+const buyed = computed(() => globalStore.myCourses?.includes(Number(route.params.id)))
 const buyForm = ref(false)
-const successBuy = ref(false)
-const authorized = ref(false)
-
-if (localStorage.getItem('token')) {
-  authorized.value = true
-}
+const showPopup = ref(false)
+const videoIndexFirst = ref(-1)
+const videoIndexSecond = ref(-2)
+const showReviews = ref(true)
+const text = ref('')
+const rating = ref<number | null>(null)
+const successLeaveReview = ref(false)
+const showForm = ref(true)
+const cardNumber = ref('')
+const expirationDate = ref('')
+const cvv = ref('')
+const owner = ref('')
 
 const buyNow = () => {
-  if (localStorage.getItem('token')) {
+  if (globalStore.isAuth) {
     buyForm.value = true
   } else {
+    toast.clear()
+    toast.warning('You need to login to buy the course')
     router.push('/auth')
   }
 }
 
 const buy_post = () => {
-  axios
-    .post(
-      `http://localhost:8080/api/user/buy/${route.params.id}`,
-      {},
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then((res) => {
-      console.log(res)
-      getCourseToken()
-      successBuy.value = true
-      setTimeout(() => {
-        buyed.value = true
-        buyForm.value = false
-        window.scrollTo(0, 0)
-      }, 2000)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  if (cardNumber.value.length !== 19) {
+    toast.clear()
+    toast.error('Card number is not correct')
+    return
+  }
+  if (expirationDate.value.length !== 5) {
+    toast.clear()
+    toast.error('Expiration date is not correct')
+    return
+  }
+  if (cvv.value.length !== 3) {
+    toast.clear()
+    toast.error('CVV is not correct')
+    return
+  }
+  if (owner.value.length === 0) {
+    toast.clear()
+    toast.error('Owner is required')
+    return
+  }
+  globalStore.isLoading = true
+  setTimeout(() => {
+    globalStore.isLoading = false
+    cardNumber.value = ''
+    expirationDate.value = ''
+    cvv.value = ''
+    owner.value = ''
+    buyForm.value = false
+    toast.clear()
+    toast.success('Successfully bought')
+    globalStore.myCourses?.push(Number(route.params.id))
+    localStorage.removeItem('myCourses')
+    localStorage.setItem('myCourses', globalStore.myCourses as unknown as string)
+    router.push('/my-courses')
+  }, 3000)
 }
-
-const showPopup = ref(false)
-
-// const getCourseById = () => {
-//   axios
-//     .get(`http://localhost:8080/api/public/course/${route.params.id}`, {})
-//     .then((res) => {
-//       course.value = res.data
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//     })
-// }
-
-const getCourseToken = () => {
-  axios
-    .get(`http://localhost:8080/api/public/course/${route.params.id}`, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    .then((res) => {
-      course.value = res.data
-      console.log(course.value)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-// getCourseById()
-
-const myCourses = ref()
-
-if (localStorage.getItem('token')) {
-  axios
-    .get('http://localhost:8080/api/user/myCourses', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    .then((res) => {
-      myCourses.value = res.data.content
-      myCourses.value.forEach((i) => {
-        if (i.id == route.params.id) {
-          buyed.value = true
-          getCourseToken()
-        }
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-
-const showReviews = ref(true)
-
-const courseId = ref(route.params.id)
-const text = ref('')
-const rating = ref('')
-const successLeaveReview = ref(false)
-const showForm = ref(true)
 
 const postReview = () => {
-  axios
-    .post(
-      `http://localhost:8080/api/user/comment`,
-      {
-        courseId: courseId.value,
-        text: text.value,
-        rating: Number(rating.value)
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then((res) => {
-      console.log(res)
-      getCourseToken()
-      text.value = ''
-      rating.value = ''
-      successLeaveReview.value = true
-      setTimeout(() => {
-        successLeaveReview.value = false
-        showForm.value = false
-      }, 2000)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+  if (rating.value === null) {
+    toast.clear()
+    toast.error('Rating is required')
+    return
+  }
+  if (rating.value < 1 || rating.value > 5) {
+    toast.clear()
+    toast.error('Rating must be from 1 to 5')
+    return
+  }
+  if (text.value.length === 0) {
+    toast.clear()
+    toast.error('Review text is required')
+    return
+  }
+  const newReview = {
+    id: Number(course.value?.reviews?.length) + 1,
+    name: globalStore.fullName ?? 'User',
+    rating: rating.value,
+    comment: text.value
+  }
+  globalStore.isLoading = true
+  setTimeout(() => {
+    globalStore.isLoading = false
+    course.value?.reviews.push(newReview)
+    text.value = ''
+    rating.value = null
+    toast.clear()
+    toast.success('Successfully sent')
+  }, 2000)
+}
+
+window.scrollTo(0, 0)
+
+const videoPopupShown = (index1: number, index2: number) => {
+  showPopup.value = true
+  globalStore.videoPopup = true
+  videoIndexFirst.value = index1
+  videoIndexSecond.value = index2
+}
+
+const closePopup = () => {
+  showPopup.value = false
+  globalStore.videoPopup = false
 }
 </script>
 
 <template>
   <HeaderC />
   <div class="container">
-    <div class="courses" :class="{ 'unset-padding': buyed }">
+    <div class="courses" :class="{ 'unset-padding': buyed, 'pb-230': buyForm }">
       <div class="courses__breadcrumbs">
         <p @click="router.push('/')">Home</p>
         <svg
@@ -201,27 +175,46 @@ const postReview = () => {
             >
               Buy now
             </button>
-            <form @submit.prevent="buy_post" v-if="buyForm" class="buy-form">
-              <div class="form-inputs">
-                <input type="text" class="buy-form__num" required placeholder="Card number" />
-                <input type="text" class="buy-form__date" required placeholder="Expiration date" />
-                <input type="text" class="buy-form__cvv" required placeholder="CVV" />
-              </div>
-              <div class="form-inputs">
-                <input type="text" class="buy-form__num owner" required placeholder="Owner" />
-                <img src="/img/visa.png" alt="" />
-              </div>
-              <button class="courses__preview-info-btns-buy" type="submit" style="margin-top: 15px">
-                Buy now
-              </button>
-              <p class="success_buy" v-if="successBuy">Purchased successfully</p>
-            </form>
+            <Transition>
+              <form @submit.prevent="buy_post" v-if="buyForm" class="buy-form">
+                <div class="form-inputs">
+                  <input type="text"
+                         v-model="cardNumber"
+                         class="buy-form__num"
+                         v-maska data-maska="#### #### #### ####"
+                         placeholder="Card number" />
+                  <input type="text"
+                         v-model="expirationDate"
+                         class="buy-form__date"
+                         v-maska data-maska="##/##"
+                         placeholder="Expiration date" />
+                  <input type="password"
+                         v-model="cvv"
+                         class="buy-form__cvv"
+                         v-maska data-maska="###"
+                         placeholder="CVV" />
+                </div>
+                <div class="form-inputs">
+                  <input v-model="owner" type="text" class="buy-form__num owner" placeholder="Owner" />
+                  <img src="/img/visa.png" alt="visa-mastercard" />
+                </div>
+                <div class="buy-form__buttons">
+                  <button class="courses__preview-info-btns-buy" type="submit">
+                    Pay
+                  </button>
+                  <button class="courses__preview-info-btns-cancel" type="button" @click="buyForm = false">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </Transition>
           </div>
         </div>
         <div class="courses__preview-info">
           <div class="courses__preview-header">
             <p class="courses__preview-info-title">{{ course?.title }}</p>
             <p class="price" v-if="!buyed">{{ course?.price }} $</p>
+            <p class="your-course" v-else>In your course list</p>
           </div>
           <p class="author">
             Author: <span v-if="course?.author">{{ course?.author }}</span>
@@ -280,7 +273,7 @@ const postReview = () => {
           </div>
         </div>
       </div> -->
-      <div class="comments" v-if="(buyed && authorized) || true">
+      <div class="comments">
         <div class="comments__show" @click="showReviews = !showReviews">
           <p class="comments__title">Course Reviews</p>
           <p>{{ showReviews ? '🔽' : '🔼' }}</p>
@@ -294,14 +287,13 @@ const postReview = () => {
             type="number"
             placeholder="Rating from 1 to 5"
             class="comments__leave-form__rating"
-            required
+            v-maska data-maska="#"
             v-model="rating"
           />
           <input
             type="text"
             placeholder="Your review about the course"
             class="comments__leave-form__text"
-            required
             v-model="text"
           />
           <button type="submit">Leave a review</button>
@@ -333,12 +325,12 @@ const postReview = () => {
       </div>
       <p class="content__title" v-if="buyed">Course content</p>
       <div v-if="buyed">
-        <div class="content__section" v-for="(n, index) in course?.sectionDtos" :key="index">
+        <div class="content__section" v-for="(n, index1) in course?.content" :key="index1">
           <div class="content__section-title">
-            <p>{{ ++index }}. {{ n?.title }}</p>
-            <p>{{ n?.moduleDtos?.length }} lectures</p>
+            <p>{{ ++index1 }}. {{ n?.title }}</p>
+            <p>{{ n?.content?.length }} lectures</p>
           </div>
-          <div class="content__section-videos" v-for="(i, index) in n?.moduleDtos" :key="index">
+          <div class="content__section-videos" v-for="(i, index2) in n?.content" :key="index2">
             <div class="content__section-videos-name">
               <svg
                 width="15"
@@ -352,17 +344,13 @@ const postReview = () => {
                   fill="#E0E1E3"
                 />
               </svg>
-              <p @click="showPopup = true">{{ i?.title }}</p>
+              <p @click="videoPopupShown(Number(index1), Number(index2))">{{ i?.title }}</p>
             </div>
             <p class="content__section-videos-duration">{{ i?.duration }}</p>
             <VideoPopup
-              :videourl="i?.videoLink"
-              :onClose="
-                () => {
-                  showPopup = false
-                }
-              "
-              v-if="showPopup"
+              :videourl="i?.videoUrl"
+              :onClose="closePopup"
+              v-if="showPopup && videoIndexFirst === index1 && videoIndexSecond === index2"
             />
           </div>
         </div>
@@ -431,20 +419,18 @@ const postReview = () => {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 0px 0px;
+    padding: 0;
+    width: fit-content;
+    cursor: pointer;
+    &:hover p {
+      color: #569dff;
+    }
     p {
       font-weight: 700;
       font-size: 25px;
       color: #ffffff;
       transition: all 0.3s ease;
-      cursor: pointer;
     }
-    :nth-child(2) {
-      border-radius: 100%;
-    }
-  }
-  .comments__show p:hover {
-    color: #569dff;
   }
   .comments__list {
     margin-top: 20px;
@@ -500,7 +486,7 @@ const postReview = () => {
   }
 }
 .courses {
-  padding: 30px 0 150px 50px;
+  padding: 30px 0 130px 50px;
   display: flex;
   flex-direction: column;
   background: #383535;
@@ -509,6 +495,9 @@ const postReview = () => {
 }
 .unset-padding {
   padding-bottom: 50px;
+}
+.pb-230 {
+  padding-bottom: 230px;
 }
 .courses__breadcrumbs {
   display: flex;
@@ -557,6 +546,21 @@ const postReview = () => {
       .courses__preview-info-btns-buy:hover {
         background: #f6e800;
       }
+      .courses__preview-info-btns-cancel {
+        width: 100%;
+        padding: 15px 0px;
+        background: red;
+        border-radius: 30px;
+        border: none;
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .courses__preview-info-btns-cancel:hover {
+        background: #b60000;
+      }
     }
   }
   .courses__preview-info {
@@ -578,6 +582,13 @@ const postReview = () => {
         font-size: 25px;
         color: #1ae200;
         white-space: nowrap;
+      }
+      .your-course {
+        font-weight: 600;
+        font-size: 16px;
+        color: #fff600;
+        white-space: nowrap;
+        text-transform: uppercase;
       }
     }
     .courses__preview-info-title {
@@ -719,6 +730,12 @@ const postReview = () => {
   flex-direction: column;
   gap: 10px;
   margin-top: 25px;
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 15px;
+  }
   .form-inputs {
     display: flex;
     align-items: center;

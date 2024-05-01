@@ -124,8 +124,8 @@ scrollTop()
           </div>
           <div
             class="course"
-            v-if="courses.length > 3"
-            @click="router.push('/details/' + courses[fourthIndex].id + '/' + 3)"
+            v-if="courses.length > 4"
+            @click="router.push('/details/' + courses[4].id + '/' + 3)"
           >
             <img :src="courses[4]?.image" alt="" />
             <p class="course__name">{{ courses[4]?.title }}</p>

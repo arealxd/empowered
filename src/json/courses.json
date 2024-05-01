@@ -10,6 +10,88 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to Machine Learning",
+        "content": [
+          {
+            "title": "What is Machine Learning?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Types of Machine Learning",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Machine Learning Applications",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "Supervised Learning",
+            "content": [
+            {
+                "title": "What is Supervised Learning?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Supervised Learning Algorithms",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Supervised Learning Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "Unsupervised Learning",
+            "content": [
+            {
+                "title": "What is Unsupervised Learning?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Unsupervised Learning Algorithms",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Unsupervised Learning Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "Reinforcement Learning",
+            "content": [
+            {
+                "title": "What is Reinforcement Learning?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Reinforcement Learning Algorithms",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Reinforcement Learning Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+    ],
     "reviews": [
       {
         "id": 1,
@@ -48,6 +130,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to Data Analysis",
+        "content": [
+          {
+            "title": "What is Data Analysis?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Types of Data Analysis",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Data Analysis Applications",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "Descriptive Statistics",
+            "content": [
+            {
+                "title": "What is Descriptive Statistics?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Descriptive Statistics Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Descriptive Statistics Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "Inferential Statistics",
+            "content": [
+            {
+                "title": "What is Inferential Statistics?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Inferential Statistics Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Inferential Statistics Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -86,6 +230,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to 3D Animation",
+        "content": [
+          {
+            "title": "What is 3D Animation?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Types of 3D Animation",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "3D Animation Applications",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "3D Animation Techniques",
+            "content": [
+            {
+                "title": "What is 3D Animation Techniques?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "3D Animation Techniques Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "3D Animation Techniques Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "3D Animation Software",
+            "content": [
+            {
+                "title": "What is 3D Animation Software?",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "3D Animation Software Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "3D Animation Software Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -124,6 +330,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to Python",
+        "content": [
+          {
+            "title": "What is Python?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Python Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Python Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "Python Basics",
+            "content": [
+            {
+                "title": "Python Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Python Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Python Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "Python Functions",
+            "content": [
+            {
+                "title": "Python Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Python Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Python Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -162,6 +430,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to Django",
+        "content": [
+          {
+            "title": "What is Django?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Django Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "Django Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "Django Basics",
+            "content": [
+            {
+                "title": "Django Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Django Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Django Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "Django Functions",
+            "content": [
+            {
+                "title": "Django Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Django Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "Django Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -200,6 +530,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to MongoDB",
+        "content": [
+          {
+            "title": "What is MongoDB?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "MongoDB Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "MongoDB Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "MongoDB Basics",
+            "content": [
+            {
+                "title": "MongoDB Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "MongoDB Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "MongoDB Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "MongoDB Functions",
+            "content": [
+            {
+                "title": "MongoDB Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "MongoDB Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "MongoDB Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -238,6 +630,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "Deutsch, English, Español",
+    "content": [
+      {
+        "title": "Introduction to GraphQL",
+        "content": [
+          {
+            "title": "What is GraphQL?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "GraphQL Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "GraphQL Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "GraphQL Basics",
+            "content": [
+            {
+                "title": "GraphQL Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "GraphQL Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "GraphQL Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "GraphQL Functions",
+            "content": [
+            {
+                "title": "GraphQL Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "GraphQL Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "GraphQL Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -276,6 +730,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "French, English, Español",
+    "content": [
+      {
+        "title": "Introduction to TypeScript",
+        "content": [
+          {
+            "title": "What is TypeScript?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "TypeScript Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "TypeScript Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "TypeScript Basics",
+            "content": [
+            {
+                "title": "TypeScript Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "TypeScript Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "TypeScript Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "TypeScript Functions",
+            "content": [
+            {
+                "title": "TypeScript Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "TypeScript Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "TypeScript Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -314,6 +830,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English, Español",
+    "content": [
+      {
+        "title": "Introduction to JavaScript",
+        "content": [
+          {
+            "title": "What is JavaScript?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "JavaScript Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "JavaScript Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "JavaScript Basics",
+            "content": [
+            {
+                "title": "JavaScript Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "JavaScript Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "JavaScript Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "JavaScript Functions",
+            "content": [
+            {
+                "title": "JavaScript Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "JavaScript Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "JavaScript Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -352,6 +930,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to HTML",
+        "content": [
+          {
+            "title": "What is HTML?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "HTML Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "HTML Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "HTML Basics",
+            "content": [
+            {
+                "title": "HTML Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "HTML Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "HTML Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "HTML Functions",
+            "content": [
+            {
+                "title": "HTML Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "HTML Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "HTML Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -390,6 +1030,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English",
+    "content": [
+      {
+        "title": "Introduction to CSS",
+        "content": [
+          {
+            "title": "What is CSS?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "CSS Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "CSS Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+        {
+            "title": "CSS Basics",
+            "content": [
+            {
+                "title": "CSS Syntax",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "CSS Variables",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "CSS Data Types",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        },
+        {
+            "title": "CSS Functions",
+            "content": [
+            {
+                "title": "CSS Functions",
+                "duration": "10:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "CSS Functions Techniques",
+                "duration": "15:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            },
+            {
+                "title": "CSS Functions Applications",
+                "duration": "20:00",
+                "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+            }
+            ]
+        }
+      ],
     "reviews": [
       {
         "id": 1,
@@ -428,6 +1130,68 @@
     "totalHours": 10,
     "lecturesQuantity": 37,
     "courseLanguage": "English, Español",
+    "content": [
+      {
+        "title": "Introduction to SASS",
+        "content": [
+          {
+            "title": "What is SASS?",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Applications",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Features",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+      {
+        "title": "SASS Basics",
+        "content": [
+          {
+            "title": "SASS Syntax",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Variables",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Data Types",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      },
+      {
+        "title": "SASS Functions",
+        "content": [
+          {
+            "title": "SASS Functions",
+            "duration": "10:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Functions Techniques",
+            "duration": "15:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          },
+          {
+            "title": "SASS Functions Applications",
+            "duration": "20:00",
+            "videoUrl": "https://www.youtube.com/embed/LfaMVlDaQ24?si=6yFOOIl_8S8xAkJn"
+          }
+        ]
+      }
+    ],
     "reviews": [
       {
         "id": 1,

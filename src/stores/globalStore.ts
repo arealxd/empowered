@@ -9,6 +9,7 @@ export const useGlobalStore = defineStore('global', () => {
   const dateOfBirth = ref<string>(localStorage.getItem('dateOfBirth') || '')
   const email = ref<string>(localStorage.getItem('email') || '')
   const myCourses = ref<number[] | undefined>([])
+  const videoPopup = ref<boolean>(false)
 
   return {
     isLoading,
@@ -17,6 +18,7 @@ export const useGlobalStore = defineStore('global', () => {
     fullName,
     dateOfBirth,
     email,
-    myCourses
+    myCourses,
+    videoPopup
   }
 })

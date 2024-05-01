@@ -18,11 +18,12 @@ const closePopup = () => {
 <template>
   <div class="popup">
     <div class="popup__content">
-      <iframe :src="props.videourl" frameborder="0" allowfullscreen></iframe>
+      <iframe :src="props.videourl + '&autoplay=1'" frameborder="0" allowfullscreen allow="autoplay"></iframe>
       <div class="popup__buttons">
-        <button class="popup__button" @click="closePopup()">Close</button>
+        <button class="popup__button" @click="closePopup">Close</button>
       </div>
     </div>
+    <div class="popup__dark-bg" @click="closePopup"></div>
   </div>
 </template>
 
@@ -51,6 +52,7 @@ const closePopup = () => {
   border-radius: 10px;
   width: 80%;
   height: 80%;
+  z-index: 200;
 }
 
 .popup__buttons {
@@ -74,5 +76,15 @@ const closePopup = () => {
 iframe {
   width: 100%;
   height: 100%;
+}
+
+.popup__dark-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 110;
 }
 </style>

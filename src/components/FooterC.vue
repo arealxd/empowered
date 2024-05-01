@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useGlobalStore } from '@/stores/globalStore'
+
+const globalStore = useGlobalStore()
 const router = useRouter()
 
-const goMainTop = () => {
-  router.push('/')
+const goRouterTop = (route: string) => {
+  router.push(route)
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -12,14 +15,14 @@ const goMainTop = () => {
 </script>
 
 <template>
-  <div class="full-footer-bg">
+  <div v-if="!globalStore.videoPopup" class="full-footer-bg">
     <div class="container">
       <div class="footer">
         <div class="footer__blocks">
           <div class="footer__list">
-            <p @click="router.push('/courses')">All courses</p>
-            <p @click="router.push('/about')">About us</p>
-            <p @click="router.push('/auth')">Log in</p>
+            <p @click="goRouterTop('/courses')">All courses</p>
+            <p @click="goRouterTop('/about')">About us</p>
+            <p v-if="!globalStore.isAuth" @click="goRouterTop('/auth')">Log in</p>
           </div>
           <div class="footer__list contact">
             <a href="tel:+77055254909"><span>Contact phone:</span> +7 (700) 235-37-47</a>
@@ -31,7 +34,7 @@ const goMainTop = () => {
         </div>
         <div class="footer__copyright">
           <img class="footer__copyright-logo"
-               @click="goMainTop"
+               @click="goRouterTop('/')"
                src="/img/logo.png" alt="" />
           <p class="footer__copyright-copyright">© 2024 EmpowerED.</p>
         </div>

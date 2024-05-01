@@ -12,17 +12,6 @@ const coursesList = ref(coursesJson)
 const myCourses = computed(() => {
   return coursesList.value.filter((i) => globalStore.myCourses?.includes(i.id))
 })
-
-const addLocalToGlobal = () => {
-  globalStore.isLoading = true
-  if (!!localStorage.getItem('myCourses')) {
-    globalStore.myCourses = localStorage.getItem('myCourses')?.split(',').map(Number)
-    console.log(globalStore.myCourses)
-  }
-  globalStore.isLoading = false
-}
-
-addLocalToGlobal()
 window.scrollTo(0, 0)
 </script>
 

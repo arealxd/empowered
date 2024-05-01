@@ -11,10 +11,6 @@ const showProfile = ref(false)
 const searchValue = ref('')
 
 const doSearch = () => {
-  // if (searchValue.value === '') {
-  //   router.push('/courses')
-  //   return
-  // }
   router.push(`/courses/search?find=${searchValue.value}`)
 }
 
@@ -23,6 +19,7 @@ const goHome = () => {
 }
 
 const goCourses = () => {
+  searchValue.value = ''
   router.push('/courses')
 }
 
@@ -50,6 +47,17 @@ const openMyCourses = () => {
   showProfile.value = false
   router.push('/my-courses')
 }
+
+const addLocalToGlobal = () => {
+  globalStore.isLoading = true
+  if (localStorage.getItem('myCourses') != null) {
+    globalStore.myCourses = localStorage.getItem('myCourses')?.split(',').map(Number)
+  }
+  console.log(globalStore.myCourses)
+  globalStore.isLoading = false
+}
+
+addLocalToGlobal()
 </script>
 
 <template>
