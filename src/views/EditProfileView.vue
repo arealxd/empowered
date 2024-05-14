@@ -153,7 +153,7 @@ window.scrollTo({
     margin: 0 auto;
     font-weight: 700;
     font-size: 40px;
-    color: #ffffff;
+    color: #525252;
   }
 }
 .edit-form {
@@ -198,7 +198,7 @@ window.scrollTo({
   p {
     font-weight: 500;
     font-size: 17px;
-    color: #ffffff;
+    color: #3a3a3a;
   }
   input {
     width: 100%;

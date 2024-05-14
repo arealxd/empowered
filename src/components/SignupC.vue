@@ -141,7 +141,7 @@ const doSignup = () => {
   margin: 0 auto;
 }
 .login__title {
-  color: #e0e1e3;
+  color: #4b4b4b;
   font-weight: 700;
   font-size: 16px;
   span {
@@ -162,7 +162,7 @@ const doSignup = () => {
   margin-top: 34px;
   width: 100%;
   .login__input {
-    color: #e0e1e3;
+    color: #000000;
     font-weight: 700;
     font-size: 14px;
     padding: 21px 28px;
@@ -172,7 +172,7 @@ const doSignup = () => {
     width: 100%;
   }
   .login__input::placeholder {
-    color: #e0e1e3;
+    color: #484848;
     font-weight: 700;
     font-size: 14px;
   }
@@ -205,7 +205,7 @@ const doSignup = () => {
   gap: 15px;
   margin-top: 25px;
   .login__other-forget {
-    color: #ffffff;
+    color: #505050;
     font-weight: 400;
     font-size: 16px;
     span {
@@ -230,11 +230,11 @@ const doSignup = () => {
     padding: 0;
   }
   .login__other-signup {
-    color: #ffffff;
-    font-weight: 400;
+    color: #545454;
+    font-weight: 600;
     font-size: 14px;
     span {
-      color: #F2C94C;
+      color: #ce9b00;
       font-weight: 700;
       font-size: 14px;
       transition: all 0.3s ease;

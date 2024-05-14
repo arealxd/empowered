@@ -115,14 +115,14 @@ addLocalToGlobal()
 
 <style scoped lang="scss">
 .full-header-bg {
-  background: #0d0d0d;
+  background: #F2C94C;
   width: 100%;
 }
 .header {
   display: flex;
   align-items: center;
   padding: 25px 0;
-  background: #0d0d0d;
+  background: #F2C94C;
 }
 .header__logo {
   cursor: pointer;
@@ -132,12 +132,12 @@ addLocalToGlobal()
   }
 }
 .header__my-courses {
-  color: #000000;
+  color: #000;
   font-weight: 700;
   font-size: 14px;
   line-height: 17px;
   padding: 10px 20px;
-  background: #F2C94C;
+  background: #fff;
   border-radius: 30px;
   transition: all 0.3s ease;
   margin: 0 30px;
@@ -150,26 +150,28 @@ addLocalToGlobal()
 }
 .header__search {
   font-family: 'Roboto', FontAwesome;
-  color: #F2C94C;
+  color: #000;
   padding: 15px 20px;
-  background: #131313;
-  border: 1px solid #F2C94C;
+  background: #fff;
+  border: 1px solid #fff;
   border-radius: 9999px;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   width: 100%;
 }
 .header__search::placeholder {
-  color: #F2C94C;
+  color: #000;
   font-weight: 400;
   font-size: 14px;
 }
 .header__profile {
   margin: 0;
   cursor: pointer;
-  filter: brightness(0) saturate(100%) invert(96%) sepia(56%) saturate(5110%) hue-rotate(320deg) brightness(103%) contrast(90%);
+  transition: all 0.3s ease;
+  scale: 1.2;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(0%) hue-rotate(360deg) brightness(103%) contrast(104%);
   &:hover {
-    filter: brightness(0) saturate(100%) invert(91%) sepia(99%) saturate(4509%) hue-rotate(355deg) brightness(99%) contrast(110%);
+    scale: 1.4;
   }
 }
 .profile-popup {
@@ -276,40 +278,40 @@ hr {
 }
 .header__login,
 .header__signup {
-  color: #F2C94C;
+  color: #000;
   font-weight: 700;
   font-size: 14px;
   padding: 12px 16px;
   border: 1px solid #F2C94C;
   border-radius: 30px;
-  background: #0d0d0d;
+  background: #ffffff;
   transition: all 0.3s ease;
   white-space: nowrap;
 }
 .header__login:hover,
 .header__signup:hover {
-  background: #F2C94C;
-  color: #0d0d0d;
+  background: #226aff;
+  color: #fff;
 }
 .header__auth-active {
   font-weight: 700;
   font-size: 14px;
   color: #0d0d0d;
   padding: 12px 16px;
-  background: #F2C94C;
+  background: #fff;
   border-radius: 30px;
   white-space: nowrap;
 }
 
 .header__my-courses:hover {
-  background: #fff600;
+  background: #226aff;
+  color: #fff;
 }
 .about {
   margin-left: 20px;
 }
 .about:hover {
-  background: #fff600;
-  border: 1px solid #fff600;
-  color: #000;
+  background: #226aff;
+  color: #fff;
 }
 </style>

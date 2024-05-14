@@ -58,7 +58,7 @@ window.scrollTo(0, 0)
 <style scoped lang="scss">
 .about {
   padding: 40px 60px 40px 100px;
-  background: #383535;
+  background: #d5d5d5;
   border-radius: 24.6857px;
   display: flex;
   align-items: center;
@@ -68,7 +68,7 @@ window.scrollTo(0, 0)
     font-weight: 400;
     font-size: 40px;
     line-height: normal;
-    color: #ffffff;
+    color: #b07c00;
     @media (max-width: 1000px) {
       font-size: 30px;
     }
@@ -116,7 +116,7 @@ window.scrollTo(0, 0)
     font-weight: 700;
     font-size: 45px;
     line-height: 1;
-    color: #F2C94C;
+    color: #ffbe00;
     max-width: 700px;
     text-align: center;
   }
@@ -124,7 +124,7 @@ window.scrollTo(0, 0)
     font-weight: 400;
     font-size: 20px;
     line-height: 28px;
-    color: #dddddd;
+    color: #8f8f8f;
     max-width: 662px;
     margin-top: 15px;
     margin-bottom: 25px;
@@ -148,7 +148,7 @@ window.scrollTo(0, 0)
   }
 }
 .facts {
-  background: rgb(0, 12, 84);
+  background: rgb(136, 108, 32);
   padding: 100px 0;
   .facts__container {
     display: flex;

@@ -113,7 +113,10 @@ const postReview = () => {
 
 window.scrollTo(0, 0)
 
-const videoPopupShown = (index1: number, index2: number) => {
+const videoPopupShown = (index1: number, index2: number, index3: number) => {
+  if (!buyed.value && index3 !== 1) {
+    return
+  }
   showPopup.value = true
   globalStore.videoPopup = true
   videoIndexFirst.value = index1
@@ -323,14 +326,20 @@ const closePopup = () => {
         </div>
         </TransitionGroup>
       </div>
-      <p class="content__title" v-if="buyed">Course content</p>
-      <div v-if="buyed">
+      <p class="content__title">Course content</p>
+      <div class="courses-table">
         <div class="content__section" v-for="(n, index1) in course?.content" :key="index1">
-          <div class="content__section-title">
-            <p>{{ ++index1 }}. {{ n?.title }}</p>
+          <div class="content__section-title" :class="{ 'disabled-courses': !buyed && index1 !== 0}">
+            <div class="section-title-text">
+              <p>{{ ++index1 }}. {{ n?.title }}</p>
+              <img v-if="!buyed && index1 !== 1" src="/img/locked.svg" alt="lock">
+            </div>
             <p>{{ n?.content?.length }} lectures</p>
           </div>
-          <div class="content__section-videos" v-for="(i, index2) in n?.content" :key="index2">
+          <div class="content__section-videos"
+               :class="{ 'disabled-courses': !buyed && index1 !== 1}"
+               v-for="(i, index2) in n?.content"
+               :key="index2">
             <div class="content__section-videos-name">
               <svg
                 width="15"
@@ -344,7 +353,9 @@ const closePopup = () => {
                   fill="#E0E1E3"
                 />
               </svg>
-              <p @click="videoPopupShown(Number(index1), Number(index2))">{{ i?.title }}</p>
+              <p @click="videoPopupShown(Number(index1), Number(index2), index1)">
+                {{ i?.title }}
+              </p>
             </div>
             <p class="content__section-videos-duration">{{ i?.duration }}</p>
             <VideoPopup
@@ -373,17 +384,17 @@ const closePopup = () => {
   input {
     width: 100%;
     border: none;
-    border-bottom: 1px solid #ffffff;
+    border-bottom: 1px solid #000;
     padding: 5px 10px;
     background: transparent;
     outline: none;
-    color: white;
+    color: #000;
     font-weight: 500;
     font-size: 16px;
     max-width: 400px;
   }
   input::placeholder {
-    color: #b3b3b3;
+    color: #676767;
     font-weight: 500;
     font-size: 16px;
   }
@@ -423,12 +434,12 @@ const closePopup = () => {
     width: fit-content;
     cursor: pointer;
     &:hover p {
-      color: #569dff;
+      color: #d0a500;
     }
     p {
       font-weight: 700;
       font-size: 25px;
-      color: #ffffff;
+      color: #606060;
       transition: all 0.3s ease;
     }
   }
@@ -440,7 +451,7 @@ const closePopup = () => {
   }
   .comments__comment {
     padding: 20px 30px;
-    border: 1px solid #2e363c;
+    border: 1px solid #F2C94C;
     border-radius: 30px;
     .comments__comment-header {
       display: flex;
@@ -459,7 +470,7 @@ const closePopup = () => {
         p {
           font-weight: 700;
           font-size: 16px;
-          color: #ffffff;
+          color: #646464;
         }
       }
       .comments__comment-header-rating {
@@ -481,17 +492,17 @@ const closePopup = () => {
     .comments__comment-text {
       font-weight: 400;
       font-size: 16px;
-      color: #ffffff;
+      color: #525252;
     }
   }
 }
 .courses {
-  padding: 30px 0 130px 50px;
+  padding: 30px 0 130px 0;
   display: flex;
   flex-direction: column;
-  background: #383535;
+  background: #fff;
   border-radius: 30px;
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 .unset-padding {
   padding-bottom: 50px;
@@ -503,14 +514,18 @@ const closePopup = () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  svg {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(5%) saturate(7481%) hue-rotate(228deg) brightness(106%) contrast(106%);
+  }
   p {
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
+    color: #000;
   }
   p:hover {
-    color: #F2C94C;
+    color: #af8500;
   }
 }
 .courses__preview {
@@ -527,6 +542,11 @@ const closePopup = () => {
       height: 100%;
       object-fit: cover;
       border-radius: 30px;
+      border: 1px solid #F2C94C;
+      transition: all 0.3s ease;
+      &:hover {
+        transform: scale(1.03);
+      }
     }
     .courses__preview-info-btns {
       margin-top: 20px;
@@ -580,13 +600,13 @@ const closePopup = () => {
       .price {
         font-weight: 700;
         font-size: 25px;
-        color: #1ae200;
+        color: #F2C94C;
         white-space: nowrap;
       }
       .your-course {
         font-weight: 600;
         font-size: 16px;
-        color: #fff600;
+        color: #4da400;
         white-space: nowrap;
         text-transform: uppercase;
       }
@@ -594,33 +614,33 @@ const closePopup = () => {
     .courses__preview-info-title {
       font-weight: 700;
       font-size: 30px;
-      color: #ffffff;
+      color: #000000;
     }
     .courses__preview-info-desc {
       font-weight: 400;
       font-size: 18px;
-      color: #ffffff;
+      color: #4d4d4d;
       max-width: 867px;
     }
   }
   .author {
     font-weight: 400;
     font-size: 14px;
-    color: #c9c9c9;
+    color: #676767;
     span {
       font-weight: 700;
       font-size: 14px;
-      color: #c9c9c9;
+      color: #e3a500;
     }
   }
   .language {
     font-weight: 400;
     font-size: 14px;
-    color: #ffffff;
+    color: #545454;
     span {
       font-weight: 700;
       font-size: 14px;
-      color: #fdff87;
+      color: #e3a500;
     }
   }
   .hours {
@@ -630,7 +650,7 @@ const closePopup = () => {
     p {
       font-weight: 500;
       font-size: 13px;
-      color: #cbcbcb;
+      color: #545454;
     }
   }
   .rating {
@@ -674,7 +694,7 @@ const closePopup = () => {
   .content__title {
     font-weight: 700;
     font-size: 26px;
-    color: #F2C94C;
+    color: #414141;
     margin-top: 40px;
     margin-bottom: 20px;
   }
@@ -684,7 +704,7 @@ const closePopup = () => {
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: #131313;
+  background: #505050;
   border: #2e363c 1px solid;
   :nth-child(1) {
     font-weight: 700;
@@ -692,13 +712,28 @@ const closePopup = () => {
     color: #ffffff;
   }
 }
+.section-title-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  img {
+    width: 25px;
+    filter: brightness(0) saturate(100%) invert(99%) sepia(80%) saturate(0%) hue-rotate(178deg) brightness(103%) contrast(100%);
+  }
+}
+.disabled-courses {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  user-select: none;
+}
 .content__section-videos {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 15px 30px;
-  background: #000000;
+  background: #444444;
   border: #2e363c 1px solid;
   .content__section-videos-name {
     display: flex;
@@ -719,7 +754,7 @@ const closePopup = () => {
     color: #ffffff;
   }
   .content__section-videos-duration {
-    color: #9a9a9a;
+    color: #fff;
     font-weight: 500;
     font-size: 14px;
   }
@@ -746,12 +781,12 @@ const closePopup = () => {
     .buy-form__cvv {
       width: 100%;
       border: none;
-      border-bottom: 1px solid #ffffff;
+      border-bottom: 1px solid #2f2f2f;
       padding: 5px 10px;
       background: transparent;
       outline: none;
       margin: 0 auto;
-      color: white;
+      color: #000000;
       font-weight: 500;
       font-size: 16px;
     }
@@ -762,12 +797,16 @@ const closePopup = () => {
       width: 30%;
     }
     input::placeholder {
-      color: #b3b3b3;
+      color: #4b4b4b;
       font-weight: 500;
       font-size: 16px;
     }
     img {
       width: 130px;
+      border: none;
+      &:hover {
+        transform: none;
+      }
     }
     .owner {
       text-transform: uppercase;

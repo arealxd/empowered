@@ -72,10 +72,11 @@ window.scrollTo(0, 0)
 .courses {
   display: flex;
   flex-direction: column;
+  margin-top: 15px;
   p {
     font-weight: 700;
     font-size: 35px;
-    color: #ffffff;
+    color: #505050;
   }
 }
 .courses__content {
@@ -94,7 +95,7 @@ window.scrollTo(0, 0)
   p {
     font-weight: 700;
     font-size: 22px;
-    color: #bdbdbd;
+    color: #5e5e5e;
   }
   img {
     max-width: 180px;
@@ -110,14 +111,15 @@ window.scrollTo(0, 0)
     cursor: pointer;
     display: flex;
     gap: 15px;
+    transition: all 0.3s ease;
     &:hover {
-      -webkit-filter: drop-shadow(0px 0px 5px #fff);
-      filter: drop-shadow(0px 0px 5px #fff);
+      transform: scale(1.03);
     }
     img {
       width: 260px;
       height: 170px;
       border-radius: 10px;
+      border: 1px solid #F2C94C;
     }
     .course__info {
       display: flex;
@@ -126,18 +128,18 @@ window.scrollTo(0, 0)
       .course__info-name {
         font-weight: 700;
         font-size: 20px;
-        color: #ffffff;
+        color: #4b4b4b;
       }
       .course__info-description {
         font-weight: 400;
         font-size: 14px;
-        color: #ffffff;
+        color: #646464;
         max-width: 650px;
       }
       .course__info-author {
-        font-weight: 400;
+        font-weight: 600;
         font-size: 12px;
-        color: #6a6f73;
+        color: #eca900;
       }
       .course__info-rating {
         display: flex;
@@ -146,6 +148,7 @@ window.scrollTo(0, 0)
         img {
           width: 15px;
           height: 15px;
+          border: none;
         }
         p {
           font-weight: 700;
@@ -160,7 +163,7 @@ window.scrollTo(0, 0)
         p {
           font-weight: 400;
           font-size: 12px;
-          color: #6a6f73;
+          color: #494949;
         }
       }
     }

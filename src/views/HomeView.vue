@@ -3,8 +3,9 @@ import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-const router = useRouter()
 import coursesJson from '@/json/courses.json'
+
+const router = useRouter()
 
 if (localStorage.getItem('user') === 'ADMIN' || localStorage.getItem('user') === 'TEACHER') {
   router.push('/panel')
@@ -148,7 +149,7 @@ scrollTop()
 <style scoped lang="scss">
 .hero {
   padding: 60px 20px 60px 70px;
-  background: #383535;
+  background: #d5d5d5;
   border-radius: 24.6857px;
   display: flex;
   align-items: center;
@@ -164,7 +165,7 @@ scrollTop()
   font-weight: 700;
   font-size: 50px;
   line-height: 1;
-  color: #F2C94C;
+  color: #b07c00;
   max-width: 700px;
   @media (max-width: 1050px) {
     font-size: 40px;
@@ -174,7 +175,7 @@ scrollTop()
   font-weight: 400;
   font-size: 22px;
   line-height: 28px;
-  color: #dddddd;
+  color: #4b4b4b;
   max-width: 90%;
   margin-top: 15px;
   margin-bottom: 25px;
@@ -215,7 +216,7 @@ scrollTop()
   max-width: 207.7px;
 }
 .hero__content-getstarted:hover {
-  background: #fff600;
+  background: #ffdc1e;
   color: #000;
 }
 .hero__content-statistics {
@@ -248,12 +249,12 @@ scrollTop()
   .rec__title {
     font-weight: 700;
     font-size: 30px;
-    color: #e0e1e3;
+    color: #000000;
   }
   .rec__description {
     font-weight: 400;
     font-size: 20px;
-    color: #e0e1e3;
+    color: #000000;
   }
   .rec__list {
     display: flex;
@@ -265,8 +266,7 @@ scrollTop()
     cursor: pointer;
     transition: all 0.3s ease;
     &:hover {
-      -webkit-filter: drop-shadow(0px 0px 5px #fff);
-      filter: drop-shadow(0px 0px 5px #fff);
+      transform: scale(1.05);
     }
   }
   .arrow-rotate {
@@ -285,19 +285,19 @@ scrollTop()
     transition: all 0.3s ease;
     width: 100%;
     &:hover {
-      -webkit-filter: drop-shadow(0px 0px 5px #fff);
-      filter: drop-shadow(0px 0px 5px #fff);
+      transform: scale(1.05);
     }
     img {
       width: 100%;
-      object-fit: cover;
       height: 130px;
+      object-fit: cover;
       border-radius: 10px;
+      border: 1px solid #F2C94C;
     }
     .course__name {
       font-weight: 700;
       font-size: 16px;
-      color: #e0e1e3;
+      color: #000;
       margin-top: 8px;
       margin-bottom: 3px;
     }
@@ -305,7 +305,7 @@ scrollTop()
       font-weight: 400;
       font-size: 11px;
       display: flex;
-      color: #6a6f73;
+      color: #000;
     }
   }
 }

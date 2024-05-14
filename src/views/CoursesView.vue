@@ -126,7 +126,7 @@ const resetFilter = () => {
             :key="i.id"
             @click="router.push('/details/' + i.id + '/' + 2)"
           >
-            <img :src="i.image" alt="" />
+            <img :src="i.image" alt="course" class="course-img" />
             <div class="course__info">
               <div class="course__info-title">
                 <p class="course__info-name">{{ i.title }}</p>
@@ -194,10 +194,13 @@ hr {
     padding: 10px 0px;
     border: 1px solid #F2C94C;
     width: 100%;
+    svg {
+      filter: brightness(0) saturate(100%) invert(33%) sepia(0%) saturate(753%) hue-rotate(151deg) brightness(100%) contrast(85%);
+    }
     p {
       font-weight: 700;
       font-size: 20px;
-      color: #e0e1e3;
+      color: #5b5b5b;
     }
   }
   .courses__filter-sort {
@@ -242,7 +245,7 @@ hr {
   .courses-title {
     font-weight: 700;
     font-size: 35px;
-    color: #ffffff;
+    color: #030303;
   }
 }
 .courses__list {
@@ -255,14 +258,15 @@ hr {
     cursor: pointer;
     display: flex;
     gap: 15px;
+    transition: all 0.3s ease;
     &:hover {
-      -webkit-filter: drop-shadow(0px 0px 5px #fff);
-      filter: drop-shadow(0px 0px 5px #fff);
+      transform: scale(1.03);
     }
-    img {
+    .course-img {
       width: 260px;
       height: 170px;
       border-radius: 10px;
+      border: 1px solid #F2C94C;
     }
     .course__info {
       display: flex;
@@ -277,12 +281,12 @@ hr {
       .course__info-name {
         font-weight: 700;
         font-size: 20px;
-        color: #ffffff;
+        color: #000;
       }
       .course__info-description {
         font-weight: 400;
         font-size: 16px;
-        color: #ffffff;
+        color: #5b5b5b;
         max-width: 650px;
       }
       .course__info-author {
