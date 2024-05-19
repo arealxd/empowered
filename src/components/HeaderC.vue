@@ -2,15 +2,19 @@
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useGlobalStore } from '@/stores/globalStore'
+import { getAuth, onAuthStateChanged, signOut  } from 'firebase/auth'
 
 const globalStore = useGlobalStore()
 const router = useRouter()
 const route = useRoute()
-
 const showProfile = ref(false)
 const searchValue = ref('')
 
 const doSearch = () => {
+  if (searchValue.value === '') {
+    router.push('/courses')
+    return
+  }
   router.push(`/courses/search?find=${searchValue.value}`)
 }
 
@@ -37,10 +41,24 @@ const toggleLogin = () => {
   }
 }
 
+let auth = getAuth()
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    globalStore.isAuth = true
+    globalStore.email = user.email || ''
+    // @ts-ignore
+    localStorage.setItem('access-token', user?.accessToken)
+  } else {
+    globalStore.isAuth = false
+  }
+})
+
 const logout = () => {
-  localStorage.clear()
-  globalStore.isAuth = false
-  router.push('/auth')
+  signOut(auth).then(() => {
+    localStorage.clear()
+    globalStore.isAuth = false
+    router.push('/auth')
+  })
 }
 
 const openMyCourses = () => {
@@ -51,9 +69,8 @@ const openMyCourses = () => {
 const addLocalToGlobal = () => {
   globalStore.isLoading = true
   if (localStorage.getItem('myCourses') != null) {
-    globalStore.myCourses = localStorage.getItem('myCourses')?.split(',').map(Number)
+    globalStore.myCourses = localStorage.getItem('myCourses')?.split(',').map(String)
   }
-  console.log(globalStore.myCourses)
   globalStore.isLoading = false
 }
 
@@ -85,8 +102,8 @@ addLocalToGlobal()
         <Transition>
           <div class="profile-popup" v-if="showProfile">
             <img src="/img/userAva.png" alt="" />
-            <p class="user-name">{{ globalStore.fullName }}</p>
-            <p class="user-email">{{ globalStore.email }}</p>
+            <p class="user-name">{{ globalStore.email }}</p>
+<!--            <p class="user-email">{{ globalStore.email }}</p>-->
             <hr />
             <div class="notification" @click="openMyCourses">
               <img src="/img/learning.png" alt="" />
@@ -195,13 +212,13 @@ addLocalToGlobal()
   top: 0;
 }
 .user-name {
-  font-weight: 500;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 16px;
   color: #202020;
   margin-top: 10px;
 }
 .user-email {
-  font-weight: 275;
+  font-weight: 500;
   font-size: 13px;
   color: #202020;
 }
@@ -267,8 +284,7 @@ hr {
   max-width: 155px;
   background: #aa2020;
   border-radius: 12px;
-  margin: 0 auto;
-  margin-top: 10px;
+  margin: 10px auto 0;
   cursor: pointer;
   transition: all 0.3s ease-out;
 }

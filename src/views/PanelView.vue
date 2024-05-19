@@ -1,65 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
-import { reactive } from 'vue'
+import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const router = useRouter()
-
+globalStore.getCourses()
 const admin = ref(true)
-
-if (localStorage.getItem('user') === 'TEACHER') {
-  admin.value = false
-}
-
-const activeAdminNav = ref(0)
+const activeAdminNav = ref(-1)
 const activeTeacherNav = ref(0)
 const successCreated = ref(false)
-
 const fullName = ref('')
 const dateOfBirth = ref('')
 const email = ref('')
 const password = ref('')
-
 const caterogyName = ref('')
-
 const caterogyId = ref('')
 const tagName = ref('')
 
-const createTeacher = () => {
-  axios
-    .post(
-      'http://localhost:8080/api/admin/teacher/create',
-      {
-        fullName: fullName.value,
-        dateOfBirth: dateOfBirth.value,
-        email: email.value,
-        password: password.value,
-        matchingPassword: password.value
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then(
-      (response) => {
-        console.log(response)
-        successCreated.value = true
-        setTimeout(() => {
-          successCreated.value = false
-          fullName.value = ''
-          dateOfBirth.value = ''
-          email.value = ''
-          password.value = ''
-          window.scrollTo(0, 0)
-        }, 3000)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+if (localStorage.getItem('user') === 'TEACHER') {
+  admin.value = false
 }
 
 const onDateInput = (event: any) => {
@@ -74,296 +34,9 @@ const onDateInput = (event: any) => {
   }
 }
 
-const createCategory = () => {
-  axios
-    .post(
-      'http://localhost:8080/api/admin/category/create',
-      {
-        name: caterogyName.value
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then(
-      (response) => {
-        console.log(response)
-        successCreated.value = true
-        setTimeout(() => {
-          successCreated.value = false
-          caterogyName.value = ''
-        }, 3000)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
-}
-
-const createTag = () => {
-  axios
-    .post(
-      'http://localhost:8080/api/admin/category/tag/create',
-      {
-        name: tagName.value,
-        categoryId: caterogyId.value
-      },
-      {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
-        }
-      }
-    )
-    .then(
-      (response) => {
-        console.log(response)
-        successCreated.value = true
-        setTimeout(() => {
-          successCreated.value = false
-          caterogyId.value = ''
-          tagName.value = ''
-        }, 3000)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
-}
-
-const doLogout = () => {
+const doLogout = async () => {
   localStorage.clear()
-  router.push('/')
-}
-
-const allTeachers = ref()
-
-const getAllTeachers = () => {
-  activeAdminNav.value = 1
-  axios
-    .get('http://localhost:8080/api/admin/teacher/all', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    .then(
-      (response) => {
-        allTeachers.value = response.data?.content
-        console.log(allTeachers.value)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
-}
-
-const deleteCourseId = ref()
-const errorRequest = ref(false)
-
-const deleteCourse = () => {
-  axios
-    .delete(`http://localhost:8080/api/teacher/course/${deleteCourseId.value}`, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token')
-      }
-    })
-    .then(
-      (response) => {
-        console.log(response)
-        successCreated.value = true
-        setTimeout(() => {
-          successCreated.value = false
-          deleteCourseId.value = ''
-        }, 3000)
-      },
-      (error) => {
-        console.log(error)
-        errorRequest.value = true
-        setTimeout(() => {
-          errorRequest.value = false
-          deleteCourseId.value = ''
-        }, 3000)
-      }
-    )
-}
-
-interface Course {
-  image?: File
-  model: {
-    title: string
-    description: string
-    price: number
-    language: string
-    totalHours: number
-    categoryId: number
-    objectiveDtos: {
-      title: string
-    }[]
-    sectionDtos: {
-      title: string
-      moduleDtos: {
-        title: string
-        videoLink: string
-        duration: number
-      }[]
-    }[]
-  }
-}
-
-const course = ref<Course>({
-  image: undefined,
-  model: {
-    title: '',
-    description: '',
-    price: 0,
-    language: '',
-    totalHours: 0,
-    categoryId: 0,
-    objectiveDtos: [
-      {
-        title: ''
-      }
-    ],
-    sectionDtos: [
-      {
-        title: '',
-        moduleDtos: [
-          {
-            title: '',
-            videoLink: '',
-            duration: 0
-          }
-        ]
-      }
-    ]
-  }
-})
-
-const categories = ref([
-  // Your category options here
-])
-
-const addSection = () => {
-  course.value.model.sectionDtos.push({
-    title: '',
-    moduleDtos: [
-      {
-        title: '',
-        videoLink: '',
-        duration: 0
-      }
-    ]
-  })
-}
-
-const deleteSection = (index: number) => {
-  course.value.model.sectionDtos.splice(index, 1)
-}
-
-const addModule = (sectionIndex: number) => {
-  course.value.model.sectionDtos[sectionIndex].moduleDtos.push({
-    title: '',
-    videoLink: '',
-    duration: 0
-  })
-}
-
-const deleteModule = (sectionIndex: number, moduleIndex: number) => {
-  course.value.model.sectionDtos[sectionIndex].moduleDtos.splice(moduleIndex, 1)
-}
-
-const objectiveDtos = ref([
-  {
-    title: 'Web development'
-  },
-  {
-    title: 'Frontend development'
-  }
-])
-
-const submitForm = () => {
-  window.scrollTo(0, 0)
-  const mainFormData = new FormData()
-
-  // Create the formData object
-  const formData = new FormData()
-  formData.append('title', course.value.model.title)
-  formData.append('description', course.value.model.description)
-  formData.append('price', course.value.model.price.toString())
-  formData.append('language', course.value.model.language)
-  formData.append('totalHours', course.value.model.totalHours.toString())
-  formData.append('categoryId', course.value.model.categoryId.toString())
-
-  course.value.model.objectiveDtos.forEach((objective, index) => {
-    formData.append(`objectiveDtos[${index}].title`, objective.title)
-  })
-
-  course.value.model.sectionDtos.forEach((section, sectionIndex) => {
-    formData.append(`sectionDtos[${sectionIndex}].title`, section.title)
-
-    section.moduleDtos.forEach((module, moduleIndex) => {
-      formData.append(`sectionDtos[${sectionIndex}].moduleDtos[${moduleIndex}].title`, module.title)
-      formData.append(
-        `sectionDtos[${sectionIndex}].moduleDtos[${moduleIndex}].videoLink`,
-        module.videoLink
-      )
-      formData.append(
-        `sectionDtos[${sectionIndex}].moduleDtos[${moduleIndex}].duration`,
-        module.duration.toString()
-      )
-    })
-  })
-
-  // Append the formData to the mainFormData
-  mainFormData.append('model', formData)
-
-  // Append the image to the mainFormData
-  if (course.value.image) {
-    mainFormData.append('image', course.value.image)
-  }
-
-  axios
-    .post('http://localhost:8080/api/teacher/course/create', mainFormData, {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    .then(
-      (response) => {
-        console.log(response)
-        successCreated.value = true
-        setTimeout(() => {
-          successCreated.value = false
-          course.value.image = undefined
-          course.value.model = {
-            title: '',
-            description: '',
-            price: 0,
-            language: '',
-            totalHours: 0,
-            categoryId: 0,
-            sectionDtos: [
-              {
-                title: '',
-                moduleDtos: [
-                  {
-                    title: '',
-                    videoLink: '',
-                    duration: 0
-                  }
-                ]
-              }
-            ]
-          }
-          window.scrollTo(0, 0)
-        }, 3000)
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+  await router.push('/')
 }
 </script>
 
@@ -392,18 +65,18 @@ const submitForm = () => {
         <button :class="{ active: activeAdminNav === -1 }" @click="activeAdminNav = -1">
           Get all courses
         </button>
-        <button :class="{ active: activeAdminNav === 0 }" @click="activeAdminNav = 0">
-          Create teacher
-        </button>
-        <button :class="{ active: activeAdminNav === 1 }" @click="getAllTeachers">
-          Get all teachers
-        </button>
-        <button :class="{ active: activeAdminNav === 2 }" @click="activeAdminNav = 2">
-          Create category
-        </button>
-        <button :class="{ active: activeAdminNav === 3 }" @click="activeAdminNav = 3">
-          Get all categories
-        </button>
+<!--        <button :class="{ active: activeAdminNav === 0 }" @click="activeAdminNav = 0">-->
+<!--          Create teacher-->
+<!--        </button>-->
+<!--        <button :class="{ active: activeAdminNav === 1 }" @click="getAllTeachers">-->
+<!--          Get all teachers-->
+<!--        </button>-->
+<!--        <button :class="{ active: activeAdminNav === 2 }" @click="activeAdminNav = 2">-->
+<!--          Create category-->
+<!--        </button>-->
+<!--        <button :class="{ active: activeAdminNav === 3 }" @click="activeAdminNav = 3">-->
+<!--          Get all categories-->
+<!--        </button>-->
         <!-- <button :class="{ active: activeAdminNav === 3 }" @click="activeAdminNav = 3">
           Create tag
         </button> -->
@@ -422,7 +95,6 @@ const submitForm = () => {
         <button class="logout" @click="doLogout">Logout</button>
       </div>
       <form
-        @submit.prevent="createTeacher"
         class="create__create-teacher"
         v-if="activeAdminNav === 0 && admin"
       >
@@ -446,25 +118,42 @@ const submitForm = () => {
           <p class="create__get-teachers__teacher__date">Email</p>
           <p class="create__get-teachers__teacher__date">Date of birth</p>
         </div>
-        <div class="teachers-table" v-if="allTeachers?.length > 0">
+        <div v-if="false" class="teachers-table">
           <div
             class="create__get-teachers__teacher"
-            v-for="(teacher, index) in allTeachers"
-            :key="index"
           >
-            <p class="create__get-teachers__teacher__name">{{ teacher?.id }}</p>
-            <p class="create__get-teachers__teacher__email">{{ teacher?.fullName }}</p>
-            <p class="create__get-teachers__teacher__date">{{ teacher?.email }}</p>
-            <p class="create__get-teachers__teacher__date" v-if="index % 2 === 0">07.10.1999</p>
-            <p class="create__get-teachers__teacher__date" v-else>11.05.1997</p>
+            <p class="create__get-teachers__teacher__name">{{ }}</p>
+            <p class="create__get-teachers__teacher__email">{{  }}</p>
+            <p class="create__get-teachers__teacher__date">{{  }}</p>
+            <p class="create__get-teachers__teacher__date">07.10.1999</p>
           </div>
         </div>
         <div v-else>
           <p class="not-exist">List of teachers is empty</p>
         </div>
       </div>
+      <div class="create__get-teachers" v-if="activeAdminNav === -1 && admin">
+        <div class="create__get-teachers__teacher header-teacher">
+          <p class="create__get-teachers__teacher__name">ID</p>
+          <p class="create__get-teachers__teacher__email">Title</p>
+          <p class="create__get-teachers__teacher__date">Price</p>
+        </div>
+        <div v-if="globalStore.coursesList.length > 0" class="teachers-table">
+          <div
+            v-for="(course, index) in globalStore.coursesList"
+            :key="course.id"
+            class="create__get-teachers__teacher"
+          >
+            <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
+            <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
+            <p class="create__get-teachers__teacher__date" style="white-space: nowrap">{{ course.price }} $</p>
+          </div>
+        </div>
+        <div v-else>
+          <p class="not-exist">List of courses is empty</p>
+        </div>
+      </div>
       <form
-        @submit.prevent="createCategory"
         class="create__create-teacher"
         v-if="activeAdminNav === 2 && admin"
       >
@@ -473,7 +162,6 @@ const submitForm = () => {
         <p class="success-created" v-if="successCreated">Category created</p>
       </form>
       <form
-        @submit.prevent="createTag"
         class="create__create-teacher"
         v-if="activeAdminNav === 3 && admin"
       >
@@ -498,23 +186,23 @@ const submitForm = () => {
         <p class="success-created" v-if="successCreated">Course created</p>
       </form> -->
       <div class="form-container" v-if="activeTeacherNav === 0 && !admin">
-        <form @submit.prevent="submitForm">
+        <form>
           <h2>Create Course</h2>
           <div class="form-group">
             <label for="title">Title</label>
-            <input id="title" v-model="course.model.title" type="text" required />
+            <input id="title" type="text" required />
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea id="description" v-model="course.model.description" required></textarea>
+            <textarea id="description" required></textarea>
           </div>
           <div class="form-group">
             <label for="price">Price</label>
-            <input id="price" v-model.number="course.model.price" type="number" required />
+            <input id="price" type="number" required />
           </div>
           <div class="form-group">
             <label for="language">Language</label>
-            <select id="language" v-model="course.model.language" required>
+            <select id="language" required>
               <option value="">--Select Language--</option>
               <option value="EN">English</option>
               <option value="ES">Spanish</option>
@@ -525,17 +213,16 @@ const submitForm = () => {
             <label for="totalHours">Total Hours</label>
             <input
               id="totalHours"
-              v-model.number="course.model.totalHours"
               type="number"
               required
             />
           </div>
           <div class="form-group">
             <label for="category">Category</label>
-            <select id="category" v-model.number="course.model.categoryId" required>
+            <select id="category" required>
               <option value="">--Select Category--</option>
-              <option v-for="category in categories" :key="category.id" :value="category.id">
-                {{ category.name }}
+              <option>
+                {{ }}
               </option>
               <option value="2">JS2</option>
             </select>
@@ -546,71 +233,66 @@ const submitForm = () => {
           </div>
           <div class="form-group">
             <label>Sections</label>
-            <div v-for="(section, index) in course.model.sectionDtos" :key="index" class="section">
+            <div class="section">
               <div class="form-group">
                 <label>Section Title</label>
-                <input v-model="section.title" type="text" required />
+                <input type="text" required />
               </div>
               <div class="form-group">
                 <label>Modules</label>
                 <div
-                  v-for="(module, moduleIndex) in section.moduleDtos"
-                  :key="moduleIndex"
                   class="module"
                 >
                   <div class="form-group">
                     <label>Module Title</label>
-                    <input v-model="module.title" type="text" required />
+                    <input type="text" required />
                   </div>
                   <div class="form-group">
                     <label>Video Link</label>
-                    <input v-model="module.videoLink" type="text" required />
+                    <input type="text" required />
                   </div>
                   <div class="form-group">
                     <label>Duration</label>
-                    <input v-model.number="module.duration" type="number" required />
+                    <input type="number" required />
                   </div>
                   <button
                     type="button"
-                    @click="deleteModule(index, moduleIndex)"
                     class="delete-button"
                   >
                     Delete Module
                   </button>
                 </div>
-                <button type="button" @click="addModule(index)" class="add-button">
+                <button type="button" class="add-button">
                   Add Module
                 </button>
               </div>
-              <button type="button" @click="deleteSection(index)" class="delete-button">
+              <button type="button" class="delete-button">
                 Delete Section
               </button>
             </div>
-            <button type="button" @click="addSection" class="add-button">Add Section</button>
+            <button type="button" class="add-button">Add Section</button>
           </div>
           <button type="submit" class="submit-button">Create Course</button>
         </form>
       </div>
 
       <form
-        @submit.prevent="deleteCourse"
         class="create__create-teacher"
         v-if="activeTeacherNav === 1 && !admin"
       >
-        <input v-model="deleteCourseId" type="text" placeholder="Course ID" required />
+        <input type="text" placeholder="Course ID" required />
         <button type="submit">Delete</button>
         <p class="success-created" v-if="successCreated">Course deleted</p>
-        <p class="error-text" v-if="errorRequest">Course with this ID does not exist</p>
+        <p class="error-text">Course with this ID does not exist</p>
       </form>
       <form
-        @submit.prevent="deleteCourse"
         class="create__create-teacher"
         v-if="activeTeacherNav === 2 && !admin"
       >
-        <input v-model="deleteCourseId" type="text" placeholder="Course ID" required />
+        <input type="text" placeholder="Course ID" required />
         <button type="submit">Delete</button>
         <p class="success-created" v-if="successCreated">Course deleted</p>
-        <p class="error-text" v-if="errorRequest">Course with this ID does not exist</p>
+        <p class="error-text">Course with this ID does not exist</p>
       </form>
     </div>
   </div>

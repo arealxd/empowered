@@ -7,15 +7,15 @@ import { useRoute } from 'vue-router'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useToast } from 'vue-toastification'
 import { vMaska } from "maska"
-import coursesJson from '@/json/courses.json'
 import VideoPopup from '@/components/VideoPopup.vue'
 
 const toast = useToast()
 const globalStore = useGlobalStore()
+globalStore.getCourses()
 const router = useRouter()
 const route = useRoute()
-const course = ref(coursesJson.find((i) => i.id === Number(route.params.id)))
-const buyed = computed(() => globalStore.myCourses?.includes(Number(route.params.id)))
+const course = computed(() => globalStore.coursesList?.find((c) => c.id === route.params.id))
+const buyed = computed(() => globalStore.myCourses?.includes(route.params.id))
 const buyForm = ref(false)
 const showPopup = ref(false)
 const videoIndexFirst = ref(-1)
@@ -29,6 +29,10 @@ const cardNumber = ref('')
 const expirationDate = ref('')
 const cvv = ref('')
 const owner = ref('')
+globalStore.loader = true
+setTimeout(() => {
+  globalStore.loader = false
+}, 1000)
 
 const buyNow = () => {
   if (globalStore.isAuth) {
@@ -71,7 +75,7 @@ const buy_post = () => {
     buyForm.value = false
     toast.clear()
     toast.success('Successfully bought')
-    globalStore.myCourses?.push(Number(route.params.id))
+    globalStore.myCourses?.push(route.params.id)
     localStorage.removeItem('myCourses')
     localStorage.setItem('myCourses', globalStore.myCourses as unknown as string)
     router.push('/my-courses')
@@ -103,7 +107,7 @@ const postReview = () => {
   globalStore.isLoading = true
   setTimeout(() => {
     globalStore.isLoading = false
-    course.value?.reviews.push(newReview)
+    course.value?.reviews?.push(newReview)
     text.value = ''
     rating.value = null
     toast.clear()

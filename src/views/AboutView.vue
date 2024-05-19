@@ -150,6 +150,7 @@ window.scrollTo(0, 0)
 .facts {
   background: rgb(136, 108, 32);
   padding: 100px 0;
+  margin-bottom: -2px;
   .facts__container {
     display: flex;
     flex-direction: column;

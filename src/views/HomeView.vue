@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import coursesJson from '@/json/courses.json'
+import { useGlobalStore } from '@/stores/globalStore'
 
+const globalStore = useGlobalStore()
 const router = useRouter()
+
+globalStore.getCourses()
 
 if (localStorage.getItem('user') === 'ADMIN' || localStorage.getItem('user') === 'TEACHER') {
   router.push('/panel')
 }
 
-const courses = ref(coursesJson)
+const courses = computed(() => {
+  return globalStore.coursesList
+})
 
 const firstIndex = ref(0)
 const secondIndex = ref(1)

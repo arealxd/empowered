@@ -3,7 +3,9 @@ import { ref } from 'vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import { useToast } from 'vue-toastification'
 import router from '@/router'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
+const errMessage = ref('')
 const globalStore = useGlobalStore()
 const toast = useToast()
 const emit = defineEmits(['forgot', 'signup'])
@@ -13,7 +15,7 @@ const password = ref('')
 const emailError = ref(false)
 const passwordError = ref(false)
 
-const doLogin = () => {
+const doLogin = async () => {
   if (!email.value || !password.value) {
     toast.clear()
     toast.error('Please fill all fields')
@@ -41,18 +43,52 @@ const doLogin = () => {
   } else {
     emailError.value = false
   }
-  if (localStorage.getItem('email') === email.value && localStorage.getItem('password') === password.value) {
-    localStorage.setItem('isAuth', 'true')
-    globalStore.isAuth = true
-    toast.clear()
-    toast.success('Logged in successfully')
-    router.push('/')
-  } else {
-    toast.clear()
-    toast.error('Invalid email or password')
-    emailError.value = true
-    passwordError.value = true
+  if (email.value === "admin@gmail.com" && password.value === "admin123") {
+    localStorage.setItem('isAdmin', 'true')
+    localStorage.setItem('email', email.value)
+    globalStore.isAdmin = true
+    globalStore.email = email.value
+    await router.push('/panel')
+    window.location.reload()
+    return
   }
+  globalStore.isLoading = true
+  await signInWithEmailAndPassword(getAuth(), email.value, password.value)
+    .then(async () => {
+      localStorage.setItem('email', email.value)
+      localStorage.setItem('isAuth', 'true')
+      globalStore.email = email.value
+      globalStore.isAuth = true
+      toast.clear()
+      toast.success('Logged in successfully')
+      await router.push('/')
+    }).catch((error) => {
+    toast.clear()
+    switch (error.code) {
+      case 'auth/user-not-found':
+        errMessage.value = 'User not found'
+        emailError.value = true
+        passwordError.value = true
+        break
+      case 'auth/wrong-password':
+        errMessage.value = 'Wrong password'
+        emailError.value = false
+        passwordError.value = true
+        break
+      case 'auth/invalid-email':
+        errMessage.value = 'Invalid email'
+        emailError.value = true
+        passwordError.value = false
+        break
+      default:
+        errMessage.value = "Email or password is incorrect"
+        emailError.value = true
+        passwordError.value = true
+    }
+    toast.error(errMessage.value)
+  }).finally(() => {
+    globalStore.isLoading = false
+  })
 }
 </script>
 
@@ -100,7 +136,7 @@ const doLogin = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 47px 0 250px 0;
+  padding: 47px 0 350px 0;
   width: 100%;
   max-width: 352px;
   margin: 0 auto;

@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-import coursesJson from '@/json/courses.json'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGlobalStore } from '@/stores/globalStore'
 
 const globalStore = useGlobalStore()
+globalStore.getCourses()
 const router = useRouter()
-const coursesList = ref(coursesJson)
+const coursesList = ref(globalStore.coursesList)
 const myCourses = computed(() => {
-  return coursesList.value.filter((i) => globalStore.myCourses?.includes(i.id))
+  return coursesList.value.filter((i) => globalStore.myCourses?.includes(i?.id))
 })
 window.scrollTo(0, 0)
+globalStore.loader = true
+setTimeout(() => {
+  globalStore.loader = false
+}, 1000)
 </script>
 
 <template>

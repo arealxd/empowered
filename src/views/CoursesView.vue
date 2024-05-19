@@ -1,43 +1,71 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-import coursesJson from '@/json/courses.json'
 import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useGlobalStore } from '@/stores/globalStore'
 
 window.scrollTo(0, 0)
+
+const globalStore = useGlobalStore()
 const router = useRouter()
 const route = useRoute()
 const sort = ref()
 const rating = ref()
 const hours = ref()
+const searchResult = ref<any>([])
+globalStore.loader = true
+setTimeout(() => {
+  globalStore.loader = false
+}, 1000)
 
-const jsonCourses = coursesJson
-const allCourses = ref(coursesJson)
-const searchResult = ref([] as typeof coursesJson)
-
-const applyFilter = () => {
-}
-
-const getCourses = () => {
-}
-
-getCourses()
-
-const setSearchResult = () => {
-  allCourses.value = jsonCourses
-  if (route.query.find && route.query.find.toString().length > 0) {
-    const filteredCourses = allCourses.value.filter((course: any) =>
+const applyFilter = async () => {
+  await globalStore.getCourses()
+  if (sort.value) {
+    globalStore.coursesList = globalStore.coursesList.sort((a: any, b: any) => {
+      if (sort.value === 'ASC') {
+        return a.price - b.price
+      } else {
+        return b.price - a.price
+      }
+    })
+  }
+  if (rating.value) {
+    globalStore.coursesList = globalStore.coursesList.filter((course: any) => course.rating == rating.value)
+  }
+  if (hours.value) {
+    globalStore.coursesList = globalStore.coursesList.filter((course: any) => {
+      if (hours.value === 'ONE_TO_SIX') {
+        return course.totalHours >= 1 && course.totalHours <= 6
+      } else if (hours.value === 'SIX_TO_TEN') {
+        return course.totalHours >= 6 && course.totalHours <= 10
+      } else {
+        return course.totalHours >= 10
+      }
+    })
+  }
+  if (route.query.find) {
+    const filteredCourses = globalStore.coursesList.filter((course: any) =>
       course.title.toLowerCase().includes(route.query.find?.toString().toLowerCase())
     );
     searchResult.value = filteredCourses;
-    allCourses.value = filteredCourses;
-  } else {
-    searchResult.value = [];
-    allCourses.value = jsonCourses;
+    globalStore.coursesList = filteredCourses;
   }
 }
 
+const setSearchResult = async () => {
+  await globalStore.getCourses()
+  if (route.query.find && route.query.find.toString().length > 0) {
+    const filteredCourses = globalStore.coursesList.filter((course: any) =>
+      course.title.toLowerCase().includes(route.query.find?.toString().toLowerCase())
+    );
+    searchResult.value = filteredCourses;
+    globalStore.coursesList = filteredCourses;
+  } else {
+    searchResult.value = [];
+    await globalStore.getCourses()
+  }
+}
 
 const querySearch = computed(() => {
   return route.query.find
@@ -47,18 +75,21 @@ watch(querySearch, () => {
   if (route.query.find) {
     setSearchResult()
   } else {
-    allCourses.value = jsonCourses
+    globalStore.getCourses()
     router.push('/courses')
   }
 }, { immediate: true })
-
 
 
 const resetFilter = () => {
   sort.value = undefined
   rating.value = undefined
   hours.value = undefined
-  getCourses()
+  if (route.query.find) {
+    router.push('/courses')
+  } else {
+    globalStore.getCourses()
+  }
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -92,22 +123,22 @@ const resetFilter = () => {
           <form @submit.prevent="applyFilter">
             <select class="courses__filter-sort" v-model="sort">
               <option :value="undefined" selected hidden>Sort by</option>
-              <option value="MOST_POPULAR">Most popular</option>
-              <option value="HIGH_RATING">High rating</option>
-              <option value="NEW">New</option>
+              <option value=DESC>Descending price</option>
+              <option value="ASC">Ascending price</option>
             </select>
             <select class="courses__filter-sort" v-model="rating">
               <option :value="undefined" selected hidden>Rating</option>
-              <option value="5">5.0</option>
-              <option value="4">4.0+</option>
-              <option value="3">3.0+</option>
+              <option :value="5">5</option>
+              <option :value="4">4</option>
+              <option :value="3">3</option>
+              <option :value="2">2</option>
+              <option :value="1">1</option>
             </select>
             <select class="courses__filter-sort" v-model="hours">
               <option :value="undefined" selected hidden>Duration</option>
-              <option value="ONE_TO_THREE">1-3 hours</option>
-              <option value="THREE_TO_SIX">3-6 hours</option>
-              <option value="SIX_TO_SEVENTEEN">6-17 hours</option>
-              <option value="MORE_SEVENTEEN">17+ hours</option>
+              <option value="ONE_TO_SIX">1-6 hours</option>
+              <option value="SIX_TO_TEN">6-10 hours</option>
+              <option value="MORE_TEN">10+ hours</option>
             </select>
             <button type="submit" class="courses__filter-apply">Apply</button>
             <button type="button" @click="resetFilter" class="courses__filter-apply">Reset</button>
@@ -116,30 +147,33 @@ const resetFilter = () => {
         <div class="not-found" v-if="route.query.find && searchResult.length === 0">
           <h1>{{ `Oops! We couldn't find any courses matching your search for «${route.query.find}»` }}</h1>
         </div>
-        <div class="not-found" v-else-if="allCourses.length === 0">
+        <div class="not-found" v-else-if="!globalStore.coursesList && !globalStore.isLoading">
           <h1>The list of courses is currently empty. Please try again later.</h1>
+        </div>
+        <div class="not-found" v-else-if="(sort || rating || hours) && globalStore.coursesList?.length === 0">
+          <h1>No courses were found based on your filter, try changing or resetting the filter.</h1>
         </div>
         <div class="courses__list" v-else>
           <div
             class="courses__list-course"
-            v-for="i in allCourses"
-            :key="i.id"
+            v-for="i in globalStore.coursesList"
+            :key="i?.id"
             @click="router.push('/details/' + i.id + '/' + 2)"
           >
-            <img :src="i.image" alt="course" class="course-img" />
+            <img :src="i?.image" alt="course" class="course-img" />
             <div class="course__info">
               <div class="course__info-title">
-                <p class="course__info-name">{{ i.title }}</p>
-                <p class="course__info-price">{{ i.price }} $</p>
+                <p class="course__info-name">{{ i?.title }}</p>
+                <p class="course__info-price">{{ i?.price }} $</p>
               </div>
-              <p class="course__info-description">{{ i.description }}</p>
-              <p class="course__info-author">{{ i.author }}</p>
-              <div class="course__info-rating" v-if="i.rating">
+              <p class="course__info-description">{{ i?.description }}</p>
+              <p class="course__info-author">{{ i?.author }}</p>
+              <div class="course__info-rating" v-if="i?.rating">
                 <img src="/img/star.png" alt="" />
-                <p>{{ i.rating }}</p>
+                <p>{{ i?.rating }}</p>
               </div>
               <div class="course__info-hours">
-                <p>{{ i.totalHours }} total hours</p>
+                <p>{{ i?.totalHours }} total hours</p>
                 <svg
                   width="6"
                   height="6"
@@ -152,7 +186,7 @@ const resetFilter = () => {
                     fill="#6A6F73"
                   />
                 </svg>
-                <p>{{ i.lecturesQuantity }} lectures</p>
+                <p>{{ i?.lecturesQuantity }} lectures</p>
               </div>
             </div>
           </div>
@@ -332,7 +366,7 @@ hr {
   width: 100%;
   justify-content: center;
   h1 {
-    color: #acacac;
+    color: #696969;
     text-align: center;
     width: 70%;
   }

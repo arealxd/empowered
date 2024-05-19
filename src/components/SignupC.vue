@@ -2,33 +2,19 @@
 import { ref } from 'vue'
 import { useToast} from 'vue-toastification'
 import { useGlobalStore } from '@/stores/globalStore'
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 
 const globalStore = useGlobalStore()
 const toast = useToast()
 const emit = defineEmits(['forgot', 'login'])
-const fullName = ref('')
-const dateOfBirth = ref('')
+const errorMessage = ref('')
 const email = ref('')
 const password = ref('')
-
-const dateOfBirthError = ref(false)
 const emailError = ref(false)
 const passwordError = ref(false)
 
-const onDateInput = (event: any) => {
-  const cleanedInput = event.target.value.replace(/\D/g, '')
-  if (cleanedInput.length <= 2) {
-    dateOfBirth.value = cleanedInput
-  } else if (cleanedInput.length <= 4) {
-    dateOfBirth.value = cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2)
-  } else {
-    dateOfBirth.value =
-      cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2, 4) + '/' + cleanedInput.slice(4, 8)
-  }
-}
-
-const doSignup = () => {
-  if (!fullName.value || !dateOfBirth.value || !email.value || !password.value) {
+const doSignup = async () => {
+  if (!email.value || !password.value) {
     toast.clear()
     toast.error('Please fill all fields')
     return
@@ -50,29 +36,39 @@ const doSignup = () => {
   } else {
     passwordError.value = false
   }
-  if (dateOfBirth.value.length !== 10) {
-    dateOfBirthError.value = true
-    toast.clear()
-    toast.error('Invalid date of birth')
-    return
-  } else {
-    dateOfBirthError.value = false
-  }
-  if (localStorage.getItem('email') === email.value) {
-    toast.clear()
-    toast.error('Email is busy')
-    return
-  }
-  globalStore.fullName = fullName.value
-  globalStore.dateOfBirth = dateOfBirth.value
-  globalStore.email = email.value
-  localStorage.setItem('fullName', fullName.value)
-  localStorage.setItem('dateOfBirth', dateOfBirth.value)
-  localStorage.setItem('email', email.value)
-  localStorage.setItem('password', password.value)
-  emit('login')
-  toast.clear()
-  toast.success('Signed up successfully')
+  globalStore.isLoading = true
+  await createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+    .then(() => {
+      emit('login')
+      toast.clear()
+      toast.success('Signed up successfully')
+    }).catch((error) => {
+      toast.clear()
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage.value = 'Email already in use'
+          passwordError.value = false
+          emailError.value = true
+          break
+        case 'auth/invalid-email':
+          errorMessage.value = 'Invalid email'
+          passwordError.value = false
+          emailError.value = true
+          break
+        case 'auth/weak-password':
+          errorMessage.value = 'Weak password'
+          passwordError.value = true
+          emailError.value = false
+          break
+        default:
+          errorMessage.value = 'Something went wrong'
+          passwordError.value = true
+          emailError.value = true
+      }
+      toast.error(errorMessage.value)
+    }).finally(() => {
+      globalStore.isLoading = false
+    })
 }
 </script>
 
@@ -81,20 +77,6 @@ const doSignup = () => {
     <p class="login__title">Sign up and start learning</p>
     <form @submit.prevent="doSignup" class="login__form">
       <div class="login__inputs-list">
-        <input
-          type="text"
-          v-model="fullName"
-          class="login__input"
-          placeholder="Full name"
-        />
-        <input
-          type="text"
-          v-model="dateOfBirth"
-          @input="onDateInput"
-          class="login__input"
-          :class="{ 'input-error': dateOfBirthError }"
-          placeholder="Date of birth"
-        />
         <input
           type="text"
           v-model="email"
@@ -135,7 +117,7 @@ const doSignup = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 47px 0 202px 0;
+  padding: 47px 0 350px 0;
   width: 100%;
   max-width: 352px;
   margin: 0 auto;

@@ -3,9 +3,10 @@ import UiLoader from '@/components/UiLoader.vue'
 import { useGlobalStore } from '@/stores/globalStore'
 import MobileBanner from '@/components/MobileBanner.vue'
 import { useWindowSize } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 
 const { width } = useWindowSize()
-
+const router = useRouter()
 const globalStore = useGlobalStore();
 
 const setLoader = () => {
@@ -19,13 +20,17 @@ const setLoader = () => {
   }, 2000)
 }
 
+if (globalStore.isAdmin || localStorage.getItem('isAdmin') === 'true') {
+  router.push('/panel')
+}
+
 setLoader()
 </script>
 
 <template>
   <div class="my-app">
     <MobileBanner />
-    <div class="global-loader" v-if="globalStore.isLoading || globalStore.splashLoading">
+    <div class="global-loader" v-if="globalStore.isLoading || globalStore.splashLoading || globalStore.loader">
       <UiLoader />
     </div>
     <router-view v-if="width > 850"/>

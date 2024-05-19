@@ -4,31 +4,22 @@ import FooterC from '@/components/FooterC.vue'
 import { ref, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useGlobalStore } from '@/stores/globalStore'
+import { getAuth, updateEmail, updatePassword } from 'firebase/auth'
 
 const globalStore = useGlobalStore()
 const toast = useToast()
-const fullName = ref<any>(localStorage.getItem('fullName'))
-const dateOfBirth = ref<any>(localStorage.getItem('dateOfBirth'))
 const email = ref<any>(localStorage.getItem('email'))
 const password = ref('')
 const confirmPassword = ref('')
 const mismatch = ref(false)
 const activeBtn = ref(true)
+let user;
 
-const editProfile = () => {
-  if (localStorage.getItem('fullName') === fullName.value && localStorage.getItem('dateOfBirth') === dateOfBirth.value && localStorage.getItem('email') === email.value && password.value === '') {
+const editProfile = async () => {
+  user = getAuth().currentUser
+  if (localStorage.getItem('email') === email.value && password.value === '') {
     toast.clear()
-    toast.warning('No changes were made!')
-    return
-  }
-  if (fullName.value === '') {
-    toast.clear()
-    toast.error('Please enter your full name!')
-    return
-  }
-  if (dateOfBirth.value === '') {
-    toast.clear()
-    toast.error('Please enter your date of birth!')
+    toast.info('No changes were made!')
     return
   }
   if (email.value === '') {
@@ -42,29 +33,37 @@ const editProfile = () => {
     toast.error('Please enter a valid email address!')
     return
   }
-  if (dateOfBirth.value.length !== 10) {
-    toast.clear()
-    toast.error('Please enter a valid date of birth!')
-    return
-  }
   if (password.value !== '' && password.value.length < 6) {
     toast.clear()
     toast.error('Password must be at least 6 characters!')
     return
   }
-  globalStore.fullName = fullName.value
-  globalStore.dateOfBirth = dateOfBirth.value
-  globalStore.email = email.value
-  localStorage.setItem('fullName', fullName.value)
-  localStorage.setItem('dateOfBirth', dateOfBirth.value)
-  localStorage.setItem('email', email.value)
-  if (password.value) {
-    localStorage.setItem('password', password.value)
+  if (user && email.value !== localStorage.getItem('email')) {
+    globalStore.isLoading = true
+    await updateEmail(user, email.value).then(() => {
+      globalStore.email = email.value
+      localStorage.setItem('email', email.value)
+      toast.success('Email updated successfully!')
+    }).catch((error) => {
+      toast.clear()
+      toast.error(error.message)
+    }).finally(() => {
+      globalStore.isLoading = false
+    })
   }
-  password.value = ''
-  confirmPassword.value = ''
-  toast.clear()
-  toast.success('Profile updated successfully!')
+  if (user && password.value !== '') {
+    globalStore.isLoading = true
+    await updatePassword(user, password.value).then(() => {
+      toast.success('Password updated successfully!')
+      password.value = ''
+      confirmPassword.value = ''
+    }).catch((error) => {
+      toast.clear()
+      toast.error(error.message)
+    }).finally(() => {
+      globalStore.isLoading = false
+    })
+  }
 }
 
 watch([password, confirmPassword], () => {
@@ -76,18 +75,6 @@ watch([password, confirmPassword], () => {
     activeBtn.value = true
   }
 })
-
-const onDateInput = (event: any) => {
-  const cleanedInput = event.target.value.replace(/\D/g, '')
-  if (cleanedInput.length <= 2) {
-    dateOfBirth.value = cleanedInput
-  } else if (cleanedInput.length <= 4) {
-    dateOfBirth.value = cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2)
-  } else {
-    dateOfBirth.value =
-      cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2, 4) + '/' + cleanedInput.slice(4, 8)
-  }
-}
 
 window.scrollTo({
   top: 0,
@@ -103,21 +90,6 @@ window.scrollTo({
     </div>
     <form @submit.prevent="editProfile" class="edit-form">
       <div class="edit">
-        <div class="edit-blocks">
-          <div class="edit-input">
-            <p>Full name</p>
-            <input type="text" v-model="fullName" placeholder="First name" />
-          </div>
-          <div class="edit-input">
-            <p>Date of birth</p>
-            <input
-              @input="onDateInput"
-              type="text"
-              v-model="dateOfBirth"
-              placeholder="Date of birth"
-            />
-          </div>
-        </div>
         <div class="edit-blocks">
           <div class="edit-input">
             <p>Email address</p>
@@ -143,7 +115,7 @@ window.scrollTo({
 
 <style scoped lang="scss">
 .edit-view {
-  padding: 20px 150px 200px;
+  padding: 20px 150px 300px;
 }
 .edit-profile {
   display: flex;
@@ -185,11 +157,13 @@ window.scrollTo({
   display: flex;
   margin-top: 20px;
   gap: 50px;
+  width: 100%;
 }
 .edit-blocks {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
 }
 .edit-input {
   display: flex;
@@ -202,7 +176,6 @@ window.scrollTo({
   }
   input {
     width: 100%;
-    max-width: 300px;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
