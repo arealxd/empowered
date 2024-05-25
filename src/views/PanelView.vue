@@ -18,10 +18,6 @@ const caterogyName = ref('')
 const caterogyId = ref('')
 const tagName = ref('')
 
-if (localStorage.getItem('user') === 'TEACHER') {
-  admin.value = false
-}
-
 const onDateInput = (event: any) => {
   const cleanedInput = event.target.value.replace(/\D/g, '')
   if (cleanedInput.length <= 2) {
@@ -36,6 +32,11 @@ const onDateInput = (event: any) => {
 
 const doLogout = async () => {
   localStorage.clear()
+  globalStore.isAdmin = false
+  await router.push('/')
+}
+
+if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
   await router.push('/')
 }
 </script>

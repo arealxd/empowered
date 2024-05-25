@@ -10,10 +10,6 @@ const router = useRouter()
 
 globalStore.getCourses()
 
-if (localStorage.getItem('user') === 'ADMIN' || localStorage.getItem('user') === 'TEACHER') {
-  router.push('/panel')
-}
-
 const courses = computed(() => {
   return globalStore.coursesList
 })
