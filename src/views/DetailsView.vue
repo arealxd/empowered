@@ -8,6 +8,7 @@ import { useGlobalStore } from '@/stores/globalStore'
 import { useToast } from 'vue-toastification'
 import { vMaska } from "maska"
 import VideoPopup from '@/components/VideoPopup.vue'
+import { getDocs, getDoc, updateDoc, addDoc, deleteDoc, collection, doc, getFirestore } from 'firebase/firestore'
 
 const toast = useToast()
 const globalStore = useGlobalStore()
@@ -15,7 +16,7 @@ globalStore.getCourses()
 const router = useRouter()
 const route = useRoute()
 const course = computed(() => globalStore.coursesList?.find((c) => c.id === route.params.id))
-const buyed = computed(() => globalStore.myCourses?.includes(route.params.id))
+const buyed = computed(() => globalStore.coursesList?.find((c) => c.id === route.params.id)?.buyedUsers?.includes(localStorage.getItem('email') ?? ''))
 const buyForm = ref(false)
 const showPopup = ref(false)
 const videoIndexFirst = ref(-1)
@@ -39,7 +40,7 @@ const buyNow = () => {
     buyForm.value = true
   } else {
     toast.clear()
-    toast.warning('You need to login to buy the course')
+    toast.info('You need to login to buy the course')
     router.push('/auth')
   }
 }
@@ -66,7 +67,7 @@ const buy_post = () => {
     return
   }
   globalStore.isLoading = true
-  setTimeout(() => {
+  setTimeout(async () => {
     globalStore.isLoading = false
     cardNumber.value = ''
     expirationDate.value = ''
@@ -75,10 +76,19 @@ const buy_post = () => {
     buyForm.value = false
     toast.clear()
     toast.success('Successfully bought')
-    globalStore.myCourses?.push(route.params.id)
-    localStorage.removeItem('myCourses')
-    localStorage.setItem('myCourses', globalStore.myCourses as unknown as string)
-    router.push('/my-courses')
+
+    const db = getFirestore();
+    const courseDocRef = doc(db, 'courses', route.params.id);
+    const courseDocSnap = await getDoc(courseDocRef);
+    if (courseDocSnap.exists()) {
+      const courseData = courseDocSnap.data();
+      const buyedUsers = Array.isArray(courseData.buyed_users) ? courseData.buyed_users : [];
+      buyedUsers?.push(localStorage.getItem('email'));
+      await updateDoc(courseDocRef, { buyed_users: buyedUsers });
+    } else {
+      console.log("No such document!");
+    }
+    await router.push('/my-courses')
   }, 3000)
 }
 
@@ -105,11 +115,29 @@ const postReview = () => {
     comment: text.value
   }
   globalStore.isLoading = true
-  setTimeout(() => {
+  setTimeout(async () => {
     globalStore.isLoading = false
     course.value?.reviews?.push(newReview)
+    const db = getFirestore();
+    const courseDocRef = doc(db, 'courses', route.params.id);
+    const courseDocSnap = await getDoc(courseDocRef);
+    if (courseDocSnap.exists()) {
+      const courseData = courseDocSnap.data();
+      const reviewsArray = Array.isArray(courseData.reviews) ? courseData.reviews : [];
+      const newReview = {
+        id: reviewsArray.length + 1,
+        name: localStorage.getItem('email') ?? 'User',
+        rating: rating.value,
+        comment: text.value
+      };
+      reviewsArray?.push(newReview);
+      await updateDoc(courseDocRef, { reviews: reviewsArray });
+    } else {
+      console.log("No such document!");
+    }
     text.value = ''
     rating.value = null
+    await globalStore.getCourses()
     toast.clear()
     toast.success('Successfully sent')
   }, 2000)
@@ -256,31 +284,7 @@ const closePopup = () => {
       </div>
     </div>
     <div class="content">
-      <!-- <div class="content__learn">
-        <p class="content__learn-title">What you'll learn</p>
-        <div class="content__learn-list">
-          <div class="content__learn-list-item" v-for="i in 6" :key="i">
-            <svg
-              width="24"
-              height="20"
-              viewBox="0 0 24 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.99991 16.6232L4.82991 12.4532L3.40991 13.8632L8.99991 19.4532L20.9999 7.45315L19.5899 6.04315L8.99991 16.6232Z"
-                fill="#E0E1E3"
-              />
-            </svg>
-            <p>
-              Pianoforte solicitude so decisively unpleasing conviction is partiality he. Or
-              particular so diminution entreaties oh do. Real he me fond show gave shot plan. Mirth
-              blush linen small hoped way its along.
-            </p>
-          </div>
-        </div>
-      </div> -->
-      <div class="comments">
+      <div class="comments" v-if="course?.reviews && course?.reviews?.length > 0 || buyed">
         <div class="comments__show" @click="showReviews = !showReviews">
           <p class="comments__title">Course Reviews</p>
           <p>{{ showReviews ? '🔽' : '🔼' }}</p>
@@ -332,7 +336,7 @@ const closePopup = () => {
       </div>
       <p class="content__title">Course content</p>
       <div class="courses-table">
-        <div class="content__section" v-for="(n, index1) in course?.content" :key="index1">
+        <div class="content__section" v-for="(n, index1) in course?.lessons" :key="index1">
           <div class="content__section-title" :class="{ 'disabled-courses': !buyed && index1 !== 0}">
             <div class="section-title-text">
               <p>{{ ++index1 }}. {{ n?.title }}</p>
@@ -382,7 +386,7 @@ const closePopup = () => {
   align-items: flex-start;
   gap: 20px;
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   width: 100%;
   max-width: 400px;
   input {
@@ -430,6 +434,7 @@ const closePopup = () => {
   display: flex;
   flex-direction: column;
   border-radius: 30px;
+  margin-bottom: 40px;
   .comments__show {
     display: flex;
     align-items: center;
@@ -448,7 +453,6 @@ const closePopup = () => {
     }
   }
   .comments__list {
-    margin-top: 20px;
     gap: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
@@ -479,7 +483,7 @@ const closePopup = () => {
       }
       .comments__comment-header-rating {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         gap: 10px;
         img {
           width: 15px;
@@ -699,7 +703,6 @@ const closePopup = () => {
     font-weight: 700;
     font-size: 26px;
     color: #414141;
-    margin-top: 40px;
     margin-bottom: 20px;
   }
 }

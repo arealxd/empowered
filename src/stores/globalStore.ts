@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getDocs, addDoc, deleteDoc, collection, doc, getFirestore } from 'firebase/firestore'
+import { getDocs, collection, getFirestore } from 'firebase/firestore'
 import { firebaseConfig } from '@/plugins/firebase'
 
 interface Course {
@@ -14,8 +14,9 @@ interface Course {
   totalHours?: number,
   lecturesQuantity?: number,
   courseLanguage?: string,
-  content?: Content[]
-  reviews?: Review[]
+  lessons?: Content[],
+  reviews?: Review[],
+  buyedUsers?: string[]
 }
 
 interface Content {
@@ -67,10 +68,12 @@ export const useGlobalStore = defineStore('global', () => {
         totalHours: doc.data().totalHours,
         lecturesQuantity: doc.data().lecturesQuantity,
         courseLanguage: doc.data().courseLanguage,
+        lessons: doc.data().lessons,
+        reviews: doc.data().reviews,
+        buyedUsers: doc.data().buyed_users
       })
     });
     isLoading.value = false
-    console.log(coursesList.value)
   }
 
 

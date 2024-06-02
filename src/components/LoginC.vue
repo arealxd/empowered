@@ -59,6 +59,7 @@ const doLogin = async () => {
       localStorage.setItem('isAuth', 'true')
       globalStore.email = email.value
       globalStore.isAuth = true
+      await router.push('/')
       toast.clear()
       toast.success('Logged in successfully')
       await router.push('/')

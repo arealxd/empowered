@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import HeaderC from '@/components/HeaderC.vue'
 import FooterC from '@/components/FooterC.vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGlobalStore } from '@/stores/globalStore'
 
 const globalStore = useGlobalStore()
 globalStore.getCourses()
 const router = useRouter()
-const coursesList = ref(globalStore.coursesList)
 const myCourses = computed(() => {
-  return coursesList.value.filter((i) => globalStore.myCourses?.includes(i?.id))
+  return globalStore.coursesList.filter((i) => i?.buyedUsers?.includes(localStorage.getItem('email') || ''))
 })
 window.scrollTo(0, 0)
 globalStore.loader = true
@@ -25,7 +24,7 @@ setTimeout(() => {
     <div class="courses">
       <p>My courses</p>
       <div class="courses__content">
-        <div v-if="!globalStore.myCourses || globalStore.myCourses?.length === 0" class="courses__empty">
+        <div v-if="!myCourses || myCourses?.length === 0" class="courses__empty">
           <p class="courses__empty--title">
             You haven't bought any courses yet
           </p>

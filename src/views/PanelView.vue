@@ -1,33 +1,124 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGlobalStore } from '@/stores/globalStore'
+import { getFirestore, doc, deleteDoc, setDoc } from "firebase/firestore";
+import AModal from '@/components/AModal.vue'
+import { useToast } from 'vue-toastification'
+
+const router = useRouter()
+const admin = ref(true)
+const activeAdminNav = ref(-2)
+const toast = useToast()
+const isModalOpened = ref(false)
+const deleteCourseId = ref(0)
+const sectionCount = ref(1)
+const subSectionCount = ref(1)
+const title = ref('')
+const description = ref('')
+const price = ref()
+const language = ref('')
+const image = ref('')
+
+
+interface Section {
+  title: string;
+  content: SubSection[];
+}
+
+interface SubSection {
+  title: string;
+  videoLink: string;
+  duration: number;
+}
+
+const formData = ref({
+  multiples: [] as Section[],
+})
+
+const addSection = () => {
+  formData.value.multiples.push({
+    title: '',
+    content: [
+      {
+        title: '',
+        videoLink: '',
+        duration: 1,
+      },
+    ],
+  });
+};
+
+addSection()
+
+function generateRandomId(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 0x0f) | 0x40;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+watch(sectionCount, () => {
+  formData.value.multiples = []
+  const subSectionsArray = ref<SubSection[]>([])
+  for (let i = 0; i < subSectionCount.value; i++) {
+    subSectionsArray.value.push({
+      title: '',
+      videoLink: '',
+      duration: 1,
+    });
+  }
+  for (let i = 0; i < sectionCount.value; i++) {
+    formData.value.multiples.push({
+      title: '',
+      content: subSectionsArray.value,
+    });
+  }
+})
+
+watch(subSectionCount, () => {
+  formData.value.multiples.forEach((item) => {
+    item.content = []
+    for (let i = 0; i < subSectionCount.value; i++) {
+      item.content.push({
+        title: '',
+        videoLink: '',
+        duration: 1,
+      });
+    }
+  })
+})
 
 const globalStore = useGlobalStore()
-const router = useRouter()
 globalStore.getCourses()
-const admin = ref(true)
-const activeAdminNav = ref(-1)
-const activeTeacherNav = ref(0)
-const successCreated = ref(false)
-const fullName = ref('')
-const dateOfBirth = ref('')
-const email = ref('')
-const password = ref('')
-const caterogyName = ref('')
-const caterogyId = ref('')
-const tagName = ref('')
 
-const onDateInput = (event: any) => {
-  const cleanedInput = event.target.value.replace(/\D/g, '')
-  if (cleanedInput.length <= 2) {
-    dateOfBirth.value = cleanedInput
-  } else if (cleanedInput.length <= 4) {
-    dateOfBirth.value = cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2)
-  } else {
-    dateOfBirth.value =
-      cleanedInput.slice(0, 2) + '/' + cleanedInput.slice(2, 4) + '/' + cleanedInput.slice(4, 8)
-  }
+const openModal = (id: any) => {
+  isModalOpened.value = true;
+  deleteCourseId.value = id;
+};
+
+const closeModal = () => {
+  isModalOpened.value = false;
+};
+
+const deleteCourse = async () => {
+  globalStore.loader = true
+  isModalOpened.value = false
+  const db = getFirestore();
+  const docRef = doc(db, "courses", deleteCourseId.value.toString());
+  deleteDoc(docRef)
+    .then(() => {
+      globalStore.getCourses()
+      toast.clear()
+      toast.success('Course deleted successfully')
+    })
+    .catch(() => {
+      toast.clear()
+      toast.error('Error deleting course')
+    }).finally(() => {
+      globalStore.loader = false
+  })
 }
 
 const doLogout = async () => {
@@ -37,7 +128,49 @@ const doLogout = async () => {
 }
 
 if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
-  await router.push('/')
+  router.push('/')
+}
+
+const getLecturesCount = () => {
+  let count = 0
+  formData.value.multiples.forEach((section) => {
+    count += section.content.length
+  })
+  return count
+}
+
+const getTotalHours = () => {
+  let count = 0
+  formData.value.multiples.forEach((section) => {
+    section.content.forEach((subSection) => {
+      count += subSection.duration
+    })
+  })
+  return count
+}
+
+const createCourse = async () => {
+  globalStore.loader = true
+  const db = getFirestore();
+  const randomId = generateRandomId()
+  await setDoc(doc(db, "courses", randomId), {
+    title: title.value,
+    description: description.value,
+    id: randomId,
+    imageUrl: image.value,
+    lecturesQuantity: getLecturesCount(),
+    price: price.value,
+    teacherName: 'EmpowerEd',
+    totalHours: getTotalHours(),
+    courseLanguage: language.value,
+    lessons: formData.value.multiples,
+  });
+  await globalStore.getCourses()
+  activeAdminNav.value = -1
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+  globalStore.loader = false
+  toast.clear()
+  toast.success('Course created successfully')
 }
 </script>
 
@@ -46,12 +179,8 @@ if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
     <div class="header-out">
       <div class="container">
         <div class="header-in">
-          <img src="/img/logo.png" alt="" />
-          <div class="header__role" v-if="!admin">
-            <img src="/img/teacher.png" alt="" />
-            <p>Teacher panel</p>
-          </div>
-          <div class="header__role" v-else>
+          <img src="/img/logo.png" alt="admin" />
+          <div class="header__role">
             <img src="/img/admin.png" alt="" />
             <p>Admin panel</p>
           </div>
@@ -66,80 +195,63 @@ if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
         <button :class="{ active: activeAdminNav === -1 }" @click="activeAdminNav = -1">
           Get all courses
         </button>
-<!--        <button :class="{ active: activeAdminNav === 0 }" @click="activeAdminNav = 0">-->
-<!--          Create teacher-->
-<!--        </button>-->
-<!--        <button :class="{ active: activeAdminNav === 1 }" @click="getAllTeachers">-->
-<!--          Get all teachers-->
-<!--        </button>-->
-<!--        <button :class="{ active: activeAdminNav === 2 }" @click="activeAdminNav = 2">-->
-<!--          Create category-->
-<!--        </button>-->
-<!--        <button :class="{ active: activeAdminNav === 3 }" @click="activeAdminNav = 3">-->
-<!--          Get all categories-->
-<!--        </button>-->
-        <!-- <button :class="{ active: activeAdminNav === 3 }" @click="activeAdminNav = 3">
-          Create tag
-        </button> -->
-        <button class="logout" @click="doLogout">Logout</button>
-      </div>
-      <div class="create__nav" v-else>
-        <button :class="{ active: activeTeacherNav === 0 }" @click="activeTeacherNav = 0">
-          Create course
-        </button>
-        <!-- <button :class="{ active: activeTeacherNav === 1 }" @click="activeTeacherNav = 1">
-          Update course
-        </button> -->
-        <button :class="{ active: activeTeacherNav === 2 }" @click="activeTeacherNav = 2">
-          Delete course by ID
+        <button :class="{ active: activeAdminNav === -3 }" @click="activeAdminNav = -3">
+          Edit course
         </button>
         <button class="logout" @click="doLogout">Logout</button>
       </div>
-      <form
-        class="create__create-teacher"
-        v-if="activeAdminNav === 0 && admin"
-      >
-        <input v-model="fullName" type="text" placeholder="Full name" required />
-        <input
-          v-model="dateOfBirth"
-          @input="onDateInput"
-          type="text"
-          placeholder="Date of birth"
-          required
-        />
-        <input v-model="email" type="email" placeholder="Email" required />
-        <input v-model="password" type="password" placeholder="Password" required />
-        <button type="submit">Create</button>
-        <p class="success-created" v-if="successCreated">Teacher created</p>
-      </form>
-      <div class="create__get-teachers" v-if="activeAdminNav === 1 && admin">
-        <div class="create__get-teachers__teacher header-teacher">
+      <div class="create__get-teachers" v-if="activeAdminNav === -1 && admin">
+        <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
           <p class="create__get-teachers__teacher__name">ID</p>
-          <p class="create__get-teachers__teacher__email">Full name</p>
-          <p class="create__get-teachers__teacher__date">Email</p>
-          <p class="create__get-teachers__teacher__date">Date of birth</p>
+          <p class="create__get-teachers__teacher__email">Title</p>
+          <p class="create__get-teachers__teacher__date" style="padding-right: 45px">Price</p>
         </div>
-        <div v-if="false" class="teachers-table">
+        <div v-if="globalStore.coursesList?.length > 0" class="teachers-table">
           <div
-            class="create__get-teachers__teacher"
+            v-for="(course, index) in globalStore.coursesList"
+            :key="course.id"
+            class="create__get-teachers__teacher list-courses"
           >
-            <p class="create__get-teachers__teacher__name">{{ }}</p>
-            <p class="create__get-teachers__teacher__email">{{  }}</p>
-            <p class="create__get-teachers__teacher__date">{{  }}</p>
-            <p class="create__get-teachers__teacher__date">07.10.1999</p>
+            <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
+            <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
+            <p class="create__get-teachers__teacher__date" style="white-space: nowrap; display: flex; align-items: center;">
+              {{ course.price }} $
+              <span>
+                <img @click="openModal(course.id)" src="/img/delete.png" alt="delete" class="delete-course">
+              </span>
+            </p>
           </div>
         </div>
         <div v-else>
-          <p class="not-exist">List of teachers is empty</p>
+          <p class="not-exist">List of courses is empty</p>
         </div>
       </div>
-      <div class="create__get-teachers" v-if="activeAdminNav === -1 && admin">
-        <div class="create__get-teachers__teacher header-teacher">
+      <AModal :isOpen="isModalOpened" @modal-close="closeModal" name="first-modal">
+        <template #header>
+          <p style="color: #0d0d0d; text-align: center; font-size: 20px">
+            Are you sure you want to delete the course?
+          </p>
+        </template>
+        <template #content>
+          <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px">
+            <button @click="closeModal" style="background: #007bff; color: #ffffff; padding: 10px 30px; border-radius: 30px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease;">
+              No
+            </button>
+            <button @click="deleteCourse" style="background: #e70000; color: #ffffff; padding: 10px 30px; border-radius: 30px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease;">
+              Yes
+            </button>
+          </div>
+        </template>
+      </AModal>
+      <div class="create__get-teachers" v-if="activeAdminNav === -3 && admin">
+        <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
           <p class="create__get-teachers__teacher__name">ID</p>
           <p class="create__get-teachers__teacher__email">Title</p>
-          <p class="create__get-teachers__teacher__date">Price</p>
+          <p class="create__get-teachers__teacher__date">
+            Price
+          </p>
         </div>
-        <div v-if="globalStore.coursesList.length > 0" class="teachers-table">
+        <div v-if="globalStore.coursesList?.length > 0" class="teachers-table">
           <div
             v-for="(course, index) in globalStore.coursesList"
             :key="course.id"
@@ -147,154 +259,84 @@ if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
           >
             <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
             <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
-            <p class="create__get-teachers__teacher__date" style="white-space: nowrap">{{ course.price }} $</p>
+            <p class="create__get-teachers__teacher__date" style="white-space: nowrap">
+              {{ course.price }} $
+            </p>
           </div>
         </div>
         <div v-else>
           <p class="not-exist">List of courses is empty</p>
         </div>
       </div>
-      <form
-        class="create__create-teacher"
-        v-if="activeAdminNav === 2 && admin"
-      >
-        <input v-model="caterogyName" type="text" placeholder="Category name" required />
-        <button type="submit">Create</button>
-        <p class="success-created" v-if="successCreated">Category created</p>
-      </form>
-      <form
-        class="create__create-teacher"
-        v-if="activeAdminNav === 3 && admin"
-      >
-        <input v-model="caterogyId" type="text" placeholder="Category ID" required />
-        <input v-model="tagName" type="text" placeholder="Tag name" required />
-        <button type="submit">Create</button>
-        <p class="success-created" v-if="successCreated">Tag created</p>
-      </form>
-      <!-- <form
-        @submit.prevent="createCourse"
-        class="create__create-teacher"
-        v-if="activeTeacherNav === 0 && !admin"
-      >
-        <input type="file" placeholder="Course image" required />
-        <input v-model="courseTitle" type="text" placeholder="Course name" required />
-        <input v-model="courseDescription" type="text" placeholder="Course description" required />
-        <input v-model="coursePrice" type="text" placeholder="Course price" required />
-        <input v-model="courseLanguage" type="text" placeholder="Course language" required />
-        <input v-model="courseHours" type="text" placeholder="Course duration in hours" required />
-        <input v-model="courseCategoryId" type="text" placeholder="Course category ID" required />
-        <button type="submit">Create</button>
-        <p class="success-created" v-if="successCreated">Course created</p>
-      </form> -->
-      <div class="form-container" v-if="activeTeacherNav === 0 && !admin">
-        <form>
+      <div class="form-container" v-if="activeAdminNav === -2 && admin">
+        <form @submit.prevent="createCourse">
           <h2>Create Course</h2>
           <div class="form-group">
+            <label for="section">Section quantity</label>
+            <input v-model="sectionCount" id="section" type="number" required />
+          </div>
+          <div class="form-group">
+            <label for="subsection">Subsection quantity</label>
+            <input v-model="subSectionCount" id="subsection" type="number" required />
+          </div>
+          <div class="form-group">
             <label for="title">Title</label>
-            <input id="title" type="text" required />
+            <input v-model="title" id="title" type="text" required />
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea id="description" required></textarea>
+            <textarea v-model="description" id="description" required></textarea>
           </div>
           <div class="form-group">
-            <label for="price">Price</label>
-            <input id="price" type="number" required />
+            <label for="price">Price $</label>
+            <input v-model="price" id="price" type="number" required />
           </div>
           <div class="form-group">
             <label for="language">Language</label>
-            <select id="language" required>
-              <option value="">--Select Language--</option>
-              <option value="EN">English</option>
-              <option value="ES">Spanish</option>
-              <option value="FR">French</option>
+            <select v-model="language" id="language" required>
+              <option value="">Select language</option>
+              <option value="Kazakh">Kazakh</option>
+              <option value="Russian">Russian</option>
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
+              <option value="German">German</option>
+              <option value="Portuguese">Portuguese</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="totalHours">Total Hours</label>
-            <input
-              id="totalHours"
-              type="number"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" required>
-              <option value="">--Select Category--</option>
-              <option>
-                {{ }}
-              </option>
-              <option value="2">JS2</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="image">Image</label>
-            <input id="image" ref="image" type="file" accept="image/*" />
+            <label for="image">Image URL for title</label>
+            <input v-model="image" id="image" type="text" required />
           </div>
           <div class="form-group">
             <label>Sections</label>
-            <div class="section">
+            <div v-for="(item, index) in formData.multiples" :key="index" class="section">
               <div class="form-group">
-                <label>Section Title</label>
-                <input type="text" required />
+                <label>{{ ++index }}) Section Title</label>
+                <input v-model="item.title" type="text" required />
               </div>
               <div class="form-group">
-                <label>Modules</label>
-                <div
-                  class="module"
-                >
+                <label>Subsections</label>
+                <div v-for="j in item.content" :key="j" class="module">
                   <div class="form-group">
-                    <label>Module Title</label>
-                    <input type="text" required />
+                    <label>Subsection Title</label>
+                    <input v-model="j.title" type="text" required />
                   </div>
                   <div class="form-group">
                     <label>Video Link</label>
-                    <input type="text" required />
+                    <input v-model="j.videoLink" type="text" required />
                   </div>
                   <div class="form-group">
-                    <label>Duration</label>
-                    <input type="number" required />
+                    <label>Duration (in hours)</label>
+                    <input v-model="j.duration" type="number" required />
                   </div>
-                  <button
-                    type="button"
-                    class="delete-button"
-                  >
-                    Delete Module
-                  </button>
                 </div>
-                <button type="button" class="add-button">
-                  Add Module
-                </button>
               </div>
-              <button type="button" class="delete-button">
-                Delete Section
-              </button>
             </div>
-            <button type="button" class="add-button">Add Section</button>
           </div>
           <button type="submit" class="submit-button">Create Course</button>
         </form>
       </div>
-
-      <form
-        class="create__create-teacher"
-        v-if="activeTeacherNav === 1 && !admin"
-      >
-        <input type="text" placeholder="Course ID" required />
-        <button type="submit">Delete</button>
-        <p class="success-created" v-if="successCreated">Course deleted</p>
-        <p class="error-text">Course with this ID does not exist</p>
-      </form>
-      <form
-        class="create__create-teacher"
-        v-if="activeTeacherNav === 2 && !admin"
-      >
-        <input type="text" placeholder="Course ID" required />
-        <button type="submit">Delete</button>
-        <p class="success-created" v-if="successCreated">Course deleted</p>
-        <p class="error-text">Course with this ID does not exist</p>
-      </form>
     </div>
   </div>
 </template>
@@ -311,7 +353,7 @@ if (!globalStore.isAdmin || localStorage.getItem('isAdmin') !== 'true') {
 }
 
 form {
-  width: 400px;
+  width: 600px;
   padding: 30px;
   background-color: #f2f2f2;
   border-radius: 8px;
@@ -389,6 +431,17 @@ select:focus {
   background-color: #6363ff;
 }
 
+.delete-course {
+  width: 25px;
+  cursor: pointer;
+  margin-top: 7px;
+  margin-left: 20px;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
 .submit-button {
   display: block;
   width: 100%;
@@ -397,14 +450,14 @@ select:focus {
   font-weight: bold;
   border: none;
   border-radius: 4px;
-  background-color: #333;
+  background-color: #009114;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-  background-color: #222;
+  background-color: #008038;
 }
 
 .section,
@@ -600,6 +653,12 @@ select:focus {
       font-weight: 400;
       font-size: 16px;
       color: #383838;
+    }
+  }
+  .list-courses {
+    &:hover {
+      background: #fff;
+      cursor: default;
     }
   }
   .header-teacher {
