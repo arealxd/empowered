@@ -456,6 +456,7 @@ const closePopup = () => {
     gap: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    margin-top: 20px;
   }
   .comments__comment {
     padding: 20px 30px;
@@ -483,7 +484,7 @@ const closePopup = () => {
       }
       .comments__comment-header-rating {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         gap: 10px;
         img {
           width: 15px;
