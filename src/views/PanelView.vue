@@ -8,7 +8,7 @@ import { useToast } from 'vue-toastification'
 
 const router = useRouter()
 const admin = ref(true)
-const activeAdminNav = ref(-2)
+const activeAdminNav = ref(-1)
 const toast = useToast()
 const isModalOpened = ref(false)
 const deleteCourseId = ref(0)
@@ -28,7 +28,7 @@ interface Section {
 
 interface SubSection {
   title: string;
-  videoLink: string;
+  videoUrl: string;
   duration: number;
 }
 
@@ -42,7 +42,7 @@ const addSection = () => {
     content: [
       {
         title: '',
-        videoLink: '',
+        videoUrl: '',
         duration: 1,
       },
     ],
@@ -65,7 +65,7 @@ watch(sectionCount, () => {
   for (let i = 0; i < subSectionCount.value; i++) {
     subSectionsArray.value.push({
       title: '',
-      videoLink: '',
+      videoUrl: '',
       duration: 1,
     });
   }
@@ -83,7 +83,7 @@ watch(subSectionCount, () => {
     for (let i = 0; i < subSectionCount.value; i++) {
       item.content.push({
         title: '',
-        videoLink: '',
+        videoUrl: '',
         duration: 1,
       });
     }
@@ -195,9 +195,9 @@ const createCourse = async () => {
         <button :class="{ active: activeAdminNav === -1 }" @click="activeAdminNav = -1">
           Get all courses
         </button>
-        <button :class="{ active: activeAdminNav === -3 }" @click="activeAdminNav = -3">
-          Edit course
-        </button>
+<!--        <button :class="{ active: activeAdminNav === -3 }" @click="activeAdminNav = -3">-->
+<!--          Edit course-->
+<!--        </button>-->
         <button class="logout" @click="doLogout">Logout</button>
       </div>
       <div class="create__get-teachers" v-if="activeAdminNav === -1 && admin">
@@ -323,8 +323,8 @@ const createCourse = async () => {
                     <input v-model="j.title" type="text" required />
                   </div>
                   <div class="form-group">
-                    <label>Video Link</label>
-                    <input v-model="j.videoLink" type="text" required />
+                    <label>Video Link (embed)</label>
+                    <input v-model="j.videoUrl" type="text" required />
                   </div>
                   <div class="form-group">
                     <label>Duration (in hours)</label>
