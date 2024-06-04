@@ -146,7 +146,7 @@ const postReview = () => {
 window.scrollTo(0, 0)
 
 const videoPopupShown = (index1: number, index2: number, index3: number) => {
-  if (!buyed.value && index3 !== 1 || course?.value?.lessons?.length === 1) {
+  if (!buyed.value && index3 !== 1 || (course.value?.lessons?.length === 1 && !buyed)) {
     return
   }
   showPopup.value = true
@@ -337,7 +337,7 @@ const closePopup = () => {
       <p class="content__title">Course content</p>
       <div class="courses-table">
         <div class="content__section" v-for="(n, index1) in course?.lessons" :key="index1">
-          <div class="content__section-title" :class="{ 'disabled-courses': !buyed && index1 !== 0 || course?.lessons?.length === 1}">
+          <div class="content__section-title" :class="{ 'disabled-courses': !buyed && index1 !== 0 || (course?.lessons?.length === 1 && !buyed)}">
             <div class="section-title-text">
               <p>{{ ++index1 }}. {{ n?.title }}</p>
               <img v-if="!buyed && index1 !== 1 || course?.lessons?.length === 1" src="/img/locked.svg" alt="lock">
@@ -345,7 +345,7 @@ const closePopup = () => {
             <p>{{ n?.content?.length }} lectures</p>
           </div>
           <div class="content__section-videos"
-               :class="{ 'disabled-courses': !buyed && index1 !== 1 || course?.lessons?.length === 1}"
+               :class="{ 'disabled-courses': !buyed && index1 !== 1 || (course?.lessons?.length === 1 && !buyed)}"
                v-for="(i, index2) in n?.content"
                :key="index2">
             <div class="content__section-videos-name">
