@@ -16,7 +16,8 @@ interface Course {
   courseLanguage?: string,
   lessons?: Content[],
   reviews?: Review[],
-  buyedUsers?: string[]
+  buyedUsers?: string[],
+  courseMaterials?: string[]
 }
 
 interface Content {
@@ -70,7 +71,8 @@ export const useGlobalStore = defineStore('global', () => {
         courseLanguage: doc.data().courseLanguage,
         lessons: doc.data().lessons,
         reviews: doc.data().reviews,
-        buyedUsers: doc.data().buyed_users
+        buyedUsers: doc.data().buyed_users,
+        courseMaterials: doc.data().courseMaterials
       })
     });
     isLoading.value = false

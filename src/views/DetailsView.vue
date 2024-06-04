@@ -374,6 +374,24 @@ const closePopup = () => {
           </div>
         </div>
       </div>
+      <p v-if="course?.courseMaterials && course?.courseMaterials?.length > 0"
+         class="content__title" style="margin-top: 30px;">
+        Course materials
+      </p>
+      <div v-if="course?.courseMaterials && course?.courseMaterials?.length > 0"
+           v-for="(material, index) in course?.courseMaterials" :key="index"
+           class="materials">
+        <div class="materials__title">
+          <img class="materials__title--icon" src="/img/document.svg" alt="doc">
+          <p class="materials__title--text">Course material #{{++index}}</p>
+        </div>
+        <a :href="material"
+           target="_blank"
+           download="course-material"
+           class="materials__download">
+          Download
+        </a>
+      </div>
     </div>
   </div>
   <FooterC />
@@ -428,6 +446,44 @@ const closePopup = () => {
     margin: 0 auto;
     color: #00cb07;
     margin-top: -10px;
+  }
+}
+.materials {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 500px;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  .materials__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .materials__title--icon {
+      width: 25px;
+    }
+    .materials__title--text {
+      font-weight: 700;
+      font-size: 16px;
+      color: #000000;
+      line-height: 1;
+    }
+  }
+  .materials__download {
+    padding: 15px 30px;
+    background: #F2C94C;
+    border-radius: 30px;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    color: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+      background: #f6e800;
+    }
   }
 }
 .comments {

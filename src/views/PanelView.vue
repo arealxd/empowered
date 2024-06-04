@@ -19,6 +19,9 @@ const description = ref('')
 const price = ref()
 const language = ref('')
 const image = ref('')
+const courseMaterial1 = ref('')
+const courseMaterial2 = ref('')
+const courseMaterial3 = ref('')
 
 
 interface Section {
@@ -153,6 +156,7 @@ const createCourse = async () => {
   globalStore.loader = true
   const db = getFirestore();
   const randomId = generateRandomId()
+  const courseMaterialLinks = [courseMaterial1.value, courseMaterial2.value, courseMaterial3.value].filter(Boolean)
   await setDoc(doc(db, "courses", randomId), {
     title: title.value,
     description: description.value,
@@ -164,6 +168,7 @@ const createCourse = async () => {
     totalHours: getTotalHours(),
     courseLanguage: language.value,
     lessons: formData.value.multiples,
+    courseMaterials: courseMaterialLinks,
   });
   await globalStore.getCourses()
   activeAdminNav.value = -1
@@ -307,6 +312,18 @@ const createCourse = async () => {
           <div class="form-group">
             <label for="image">Image URL for title</label>
             <input v-model="image" id="image" type="text" required />
+          </div>
+          <div class="form-group">
+            <label for="image">Course material link #1 (optional)</label>
+            <input v-model="courseMaterial1" id="image" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="image">Course material link #2 (optional)</label>
+            <input v-model="courseMaterial2" id="image" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="image">Course material link #3 (optional)</label>
+            <input v-model="courseMaterial3" id="image" type="text" />
           </div>
           <div class="form-group">
             <label>Sections</label>
