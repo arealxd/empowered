@@ -8,7 +8,7 @@ import { useToast } from 'vue-toastification'
 
 const router = useRouter()
 const admin = ref(true)
-const activeAdminNav = ref(-1)
+const activeAdminNav = ref(1)
 const toast = useToast()
 const isModalOpened = ref(false)
 const deleteCourseId = ref(0)
@@ -185,52 +185,159 @@ const createCourse = async () => {
       <div class="container">
         <div class="header-in">
           <img src="/img/logo.png" alt="admin" />
-          <div class="header__role">
-            <img src="/img/admin.png" alt="" />
-            <p>Admin panel</p>
+<!--          <div class="header__role">-->
+<!--            <img src="/img/admin.png" alt="" />-->
+<!--            <p>Admin panel</p>-->
+<!--          </div>-->
+          <div class="header-in__options">
+            <div class="header-in__options--item"
+                 :class="{ 'header-in__options--active': activeAdminNav === 1 }"
+                 @click="activeAdminNav = 1"
+            >
+              <img src="/img/show.png" alt="icon">
+              <p class="title">Get all courses</p>
+            </div>
+            <div class="header-in__options--item"
+                 :class="{ 'header-in__options--active': activeAdminNav === 2 }"
+                 @click="activeAdminNav = 2"
+            >
+              <img src="/img/create.png" alt="icon">
+              <p class="title">Create course</p>
+            </div>
+            <div class="header-in__options--item"
+                 :class="{ 'header-in__options--active': activeAdminNav === 3 }"
+                 @click="activeAdminNav = 3"
+            >
+              <img src="/img/users.png" alt="icon">
+              <p class="title">Users</p>
+            </div>
+            <div class="header-in__options--item"
+                 :class="{ 'header-in__options--active': activeAdminNav === 4 }"
+                 @click="activeAdminNav = 4"
+            >
+              <img src="/img/list.png" alt="icon">
+              <p class="title">Enrollments</p>
+            </div>
+            <div class="header-in__options--item"
+                 @click="doLogout"
+            >
+              <img src="/img/logout.png" alt="icon">
+              <p class="title">Logout</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class="container create">
-      <div class="create__nav" v-if="admin">
-        <button :class="{ active: activeAdminNav === -2 }" @click="activeAdminNav = -2">
-          Create course
-        </button>
-        <button :class="{ active: activeAdminNav === -1 }" @click="activeAdminNav = -1">
-          Get all courses
-        </button>
-<!--        <button :class="{ active: activeAdminNav === -3 }" @click="activeAdminNav = -3">-->
-<!--          Edit course-->
-<!--        </button>-->
-        <button class="logout" @click="doLogout">Logout</button>
-      </div>
-      <div class="create__get-teachers" v-if="activeAdminNav === -1 && admin">
-        <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
-          <p class="create__get-teachers__teacher__name">ID</p>
-          <p class="create__get-teachers__teacher__email">Title</p>
-          <p class="create__get-teachers__teacher__date" style="padding-right: 45px">Price</p>
-        </div>
-        <div v-if="globalStore.coursesList?.length > 0" class="teachers-table">
-          <div
-            v-for="(course, index) in globalStore.coursesList"
-            :key="course.id"
-            class="create__get-teachers__teacher list-courses"
-          >
-            <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
-            <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
-            <p class="create__get-teachers__teacher__date" style="white-space: nowrap; display: flex; align-items: center;">
-              {{ course.price }} $
-              <span>
-                <img @click="openModal(course.id)" src="/img/delete.png" alt="delete" class="delete-course">
-              </span>
-            </p>
+      <TransitionGroup>
+        <div class="create__get-teachers" v-if="activeAdminNav === 1 && admin">
+          <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
+            <p class="create__get-teachers__teacher__name">ID</p>
+            <p class="create__get-teachers__teacher__email">Title</p>
+            <p class="create__get-teachers__teacher__date" style="padding-right: 45px">Price</p>
+          </div>
+          <div v-if="globalStore.coursesList?.length > 0" class="teachers-table">
+            <div
+              v-for="(course, index) in globalStore.coursesList"
+              :key="course.id"
+              class="create__get-teachers__teacher list-courses"
+            >
+              <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
+              <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
+              <p class="create__get-teachers__teacher__date" style="white-space: nowrap; display: flex; align-items: center;">
+                {{ course.price }} $
+                <span>
+                  <img @click="openModal(course.id)" src="/img/delete.png" alt="delete" class="delete-course">
+                </span>
+              </p>
+            </div>
+          </div>
+          <div v-else>
+            <p class="not-exist">List of courses is empty</p>
           </div>
         </div>
-        <div v-else>
-          <p class="not-exist">List of courses is empty</p>
+        <div class="form-container" v-if="activeAdminNav === 2 && admin">
+          <form @submit.prevent="createCourse">
+            <h2>Create Course</h2>
+            <div class="form-group">
+              <label for="section">Section quantity</label>
+              <input v-model="sectionCount" id="section" type="number" required />
+            </div>
+            <div class="form-group">
+              <label for="subsection">Subsection quantity</label>
+              <input v-model="subSectionCount" id="subsection" type="number" required />
+            </div>
+            <div class="form-group">
+              <label for="title">Title</label>
+              <input v-model="title" id="title" type="text" required />
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea v-model="description" id="description" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="price">Price $</label>
+              <input v-model="price" id="price" type="number" required />
+            </div>
+            <div class="form-group">
+              <label for="language">Language</label>
+              <select v-model="language" id="language" required>
+                <option value="">Select language</option>
+                <option value="Kazakh">Kazakh</option>
+                <option value="Russian">Russian</option>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+                <option value="Portuguese">Portuguese</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="image">Image URL for title</label>
+              <input v-model="image" id="image" type="text" required />
+            </div>
+            <div class="form-group">
+              <label for="image">Course material link #1 (optional)</label>
+              <input v-model="courseMaterial1" id="image" type="text" />
+            </div>
+            <div class="form-group">
+              <label for="image">Course material link #2 (optional)</label>
+              <input v-model="courseMaterial2" id="image" type="text" />
+            </div>
+            <div class="form-group">
+              <label for="image">Course material link #3 (optional)</label>
+              <input v-model="courseMaterial3" id="image" type="text" />
+            </div>
+            <div class="form-group">
+              <label>Sections</label>
+              <div v-for="(item, index) in formData.multiples" :key="index" class="section">
+                <div class="form-group">
+                  <label>{{ ++index }}) Section Title</label>
+                  <input v-model="item.title" type="text" required />
+                </div>
+                <div class="form-group">
+                  <label>Subsections</label>
+                  <div v-for="j in item.content" :key="j" class="module">
+                    <div class="form-group">
+                      <label>Subsection Title</label>
+                      <input v-model="j.title" type="text" required />
+                    </div>
+                    <div class="form-group">
+                      <label>Video Link (embed)</label>
+                      <input v-model="j.videoUrl" type="text" required />
+                    </div>
+                    <div class="form-group">
+                      <label>Duration (in hours)</label>
+                      <input v-model="j.duration" type="number" required />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="submit-button">Create Course</button>
+          </form>
         </div>
-      </div>
+      </TransitionGroup>
       <AModal :isOpen="isModalOpened" @modal-close="closeModal" name="first-modal">
         <template #header>
           <p style="color: #0d0d0d; text-align: center; font-size: 20px">
@@ -248,112 +355,6 @@ const createCourse = async () => {
           </div>
         </template>
       </AModal>
-      <div class="create__get-teachers" v-if="activeAdminNav === -3 && admin">
-        <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
-          <p class="create__get-teachers__teacher__name">ID</p>
-          <p class="create__get-teachers__teacher__email">Title</p>
-          <p class="create__get-teachers__teacher__date">
-            Price
-          </p>
-        </div>
-        <div v-if="globalStore.coursesList?.length > 0" class="teachers-table">
-          <div
-            v-for="(course, index) in globalStore.coursesList"
-            :key="course.id"
-            class="create__get-teachers__teacher"
-          >
-            <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ ++index }}</p>
-            <p class="create__get-teachers__teacher__email">{{ course.title }}</p>
-            <p class="create__get-teachers__teacher__date" style="white-space: nowrap">
-              {{ course.price }} $
-            </p>
-          </div>
-        </div>
-        <div v-else>
-          <p class="not-exist">List of courses is empty</p>
-        </div>
-      </div>
-      <div class="form-container" v-if="activeAdminNav === -2 && admin">
-        <form @submit.prevent="createCourse">
-          <h2>Create Course</h2>
-          <div class="form-group">
-            <label for="section">Section quantity</label>
-            <input v-model="sectionCount" id="section" type="number" required />
-          </div>
-          <div class="form-group">
-            <label for="subsection">Subsection quantity</label>
-            <input v-model="subSectionCount" id="subsection" type="number" required />
-          </div>
-          <div class="form-group">
-            <label for="title">Title</label>
-            <input v-model="title" id="title" type="text" required />
-          </div>
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea v-model="description" id="description" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="price">Price $</label>
-            <input v-model="price" id="price" type="number" required />
-          </div>
-          <div class="form-group">
-            <label for="language">Language</label>
-            <select v-model="language" id="language" required>
-              <option value="">Select language</option>
-              <option value="Kazakh">Kazakh</option>
-              <option value="Russian">Russian</option>
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
-              <option value="French">French</option>
-              <option value="German">German</option>
-              <option value="Portuguese">Portuguese</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="image">Image URL for title</label>
-            <input v-model="image" id="image" type="text" required />
-          </div>
-          <div class="form-group">
-            <label for="image">Course material link #1 (optional)</label>
-            <input v-model="courseMaterial1" id="image" type="text" />
-          </div>
-          <div class="form-group">
-            <label for="image">Course material link #2 (optional)</label>
-            <input v-model="courseMaterial2" id="image" type="text" />
-          </div>
-          <div class="form-group">
-            <label for="image">Course material link #3 (optional)</label>
-            <input v-model="courseMaterial3" id="image" type="text" />
-          </div>
-          <div class="form-group">
-            <label>Sections</label>
-            <div v-for="(item, index) in formData.multiples" :key="index" class="section">
-              <div class="form-group">
-                <label>{{ ++index }}) Section Title</label>
-                <input v-model="item.title" type="text" required />
-              </div>
-              <div class="form-group">
-                <label>Subsections</label>
-                <div v-for="j in item.content" :key="j" class="module">
-                  <div class="form-group">
-                    <label>Subsection Title</label>
-                    <input v-model="j.title" type="text" required />
-                  </div>
-                  <div class="form-group">
-                    <label>Video Link (embed)</label>
-                    <input v-model="j.videoUrl" type="text" required />
-                  </div>
-                  <div class="form-group">
-                    <label>Duration (in hours)</label>
-                    <input v-model="j.duration" type="number" required />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="submit-button">Create Course</button>
-        </form>
-      </div>
     </div>
   </div>
 </template>
@@ -366,11 +367,11 @@ const createCourse = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  width: 90%;
 }
 
 form {
-  width: 600px;
+  width: 100%;
   padding: 30px;
   background-color: #f2f2f2;
   border-radius: 8px;
@@ -500,45 +501,76 @@ select:focus {
   font-size: 25px;
 }
 .background {
-  height: 100vh;
-  width: 100vw;
+  display: flex;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
   background-color: #ffffff;
+  margin-bottom: -258px;
 }
 .header-out {
   width: 100%;
-  background: #000f65;
+  background: #363636;
+  max-width: 300px;
 }
 .header-in {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
   padding: 30px 0px;
-  gap: 30px;
+  gap: 40px;
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    &--item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      img {
+        width: 20px;
+        height: 20px;
+      }
+      .title {
+        font-weight: 500;
+        font-size: 16px;
+        color: #dedede;
+      }
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+    &--active {
+      border-bottom: 1px solid #dedede;
+      padding-bottom: 5px;
+    }
+  }
   .header__role {
     display: flex;
     align-items: center;
     gap: 15px;
     img {
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
     }
     p {
       font-weight: 700;
-      font-size: 20px;
+      font-size: 16px;
       color: #fff;
     }
   }
 }
 .create {
+  width: 100%;
   padding-bottom: 200px;
   background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-top: 40px;
+  margin-top: 30px;
   .create__nav {
     display: flex;
     align-items: center;
@@ -625,7 +657,6 @@ select:focus {
   justify-content: center;
   gap: 15px;
   width: 100%;
-  max-width: 700px;
   .teachers-table {
     display: flex;
     flex-direction: column;
@@ -633,17 +664,12 @@ select:focus {
     justify-content: center;
     gap: 15px;
     width: 100%;
-    max-width: 700px;
-    // overflow-y: auto;
-    // height: 100%;
-    // max-height: 300px;
   }
   .create__get-teachers__teacher {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    max-width: 700px;
+    width: 90%;
     padding: 10px 30px;
     border: 1px solid #c3c0c0;
     border-radius: 10px;
