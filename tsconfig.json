@@ -1,15 +1,49 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
-    "lib": ["es2015", "es2016", "dom", "es2018.promise"],
-    "ignoreDeprecations": "5.0",
-    "verbatimModuleSyntax": true,
+    "sourceMap": true,
+    "module": "ESNext",
+    "target": "ES5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "esnext.asynciterable",
+      "ES5"
+    ],
+    "useDefineForClassFields": true,
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "removeComments": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": [
+        "src/*"
+      ],
+    },
+    "types": [
+      "vite/client"
+    ]
   },
+  "include": [
+    "src",
+    "**/*.ts",
+    "**/*.tsx",
+    "postcss.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

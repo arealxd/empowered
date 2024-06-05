@@ -51,31 +51,60 @@ export const useGlobalStore = defineStore('global', () => {
   const videoPopup = ref<boolean>(false)
   const coursesList = ref<Course[]>([])
   const teachersList = ref<any>([])
+  const usersList = ref<any>([]);
+  const enrollments = ref<any>({});
 
   const db = getFirestore(firebaseConfig);
   const getCourses = async () => {
     coursesList.value = []
     isLoading.value = true
     const querySnapshot = await getDocs(collection(db, "courses"));
+    const enrollmentsTemp: Record<string, any> = {};
+
     querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      
+      if (data.buyed_users){
+        data.buyed_users.forEach((email: string) => {
+           if (!enrollmentsTemp[email]) enrollmentsTemp[email] = [];
+           enrollmentsTemp[email].push(data.title)
+        });
+      }
+
       coursesList.value.push({
         id: doc.id,
-        title: doc.data().title,
-        description: doc.data().description,
-        price: doc.data().price,
-        author: doc.data().teacherName,
-        image: doc.data().imageUrl,
-        rating: doc.data().rating,
-        totalHours: doc.data().totalHours,
-        lecturesQuantity: doc.data().lecturesQuantity,
-        courseLanguage: doc.data().courseLanguage,
-        lessons: doc.data().lessons,
-        reviews: doc.data().reviews,
-        buyedUsers: doc.data().buyed_users,
-        courseMaterials: doc.data().courseMaterials
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        author: data.teacherName,
+        image: data.imageUrl,
+        rating: data.rating,
+        totalHours: data.totalHours,
+        lecturesQuantity: data.lecturesQuantity,
+        courseLanguage: data.courseLanguage,
+        lessons: data.lessons,
+        reviews: data.reviews,
+        buyedUsers: data.buyed_users,
+        courseMaterials: data.courseMaterials
       })
     });
+
+    enrollments.value = enrollmentsTemp;
+    
     isLoading.value = false
+  }
+
+  const loadUsers = async () => {
+    isLoading.value = true
+    await fetch('https://oi-sana.kz/empowered/user')
+      .then(data => data.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          usersList.value = data;
+        }
+      }).finally(() => {
+        isLoading.value = false
+      });
   }
 
 
@@ -92,6 +121,9 @@ export const useGlobalStore = defineStore('global', () => {
     videoPopup,
     coursesList,
     teachersList,
-    getCourses
+    getCourses,
+    loadUsers,
+    usersList,
+    enrollments
   }
 })
