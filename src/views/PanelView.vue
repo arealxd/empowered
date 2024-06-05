@@ -12,6 +12,8 @@ const activeAdminNav = ref(1)
 const toast = useToast()
 const isModalOpened = ref(false)
 const deleteCourseId = ref(0)
+const deleteUserId = ref(0)
+const isUserModalOpened = ref(false)
 const sectionCount = ref(1)
 const subSectionCount = ref(1)
 const title = ref('')
@@ -95,14 +97,21 @@ watch(subSectionCount, () => {
 
 const globalStore = useGlobalStore()
 globalStore.getCourses()
+globalStore.loadUsers()
 
 const openModal = (id: any) => {
   isModalOpened.value = true;
   deleteCourseId.value = id;
 };
 
+const openUserModal = (id: any) => {
+  isUserModalOpened.value = true;
+  deleteUserId.value = id;
+};
+
 const closeModal = () => {
   isModalOpened.value = false;
+  isUserModalOpened.value = false;
 };
 
 const deleteCourse = async () => {
@@ -120,6 +129,23 @@ const deleteCourse = async () => {
       toast.clear()
       toast.error('Error deleting course')
     }).finally(() => {
+      globalStore.loader = false
+  })
+}
+
+const deleteUser = async () => {
+  globalStore.loader = true
+  isUserModalOpened.value = false
+  fetch(`https://oi-sana.kz/empowered/user/${deleteUserId.value}`, {method: "DELETE"})
+    .then(() => {
+      toast.clear()
+      toast.success('User deleted successfully')
+    })
+    .catch(() => {
+      toast.clear()
+      toast.error('Error deleting course')
+    }).finally(() => {
+      globalStore.loadUsers();
       globalStore.loader = false
   })
 }
@@ -232,7 +258,7 @@ const createCourse = async () => {
       <TransitionGroup>
         <div class="create__get-teachers" v-if="activeAdminNav === 1 && admin">
           <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
-            <p class="create__get-teachers__teacher__name">ID</p>
+            <p class="create__get-teachers__teacher__name">#</p>
             <p class="create__get-teachers__teacher__email">Title</p>
             <p class="create__get-teachers__teacher__date" style="padding-right: 45px">Price</p>
           </div>
@@ -337,6 +363,60 @@ const createCourse = async () => {
             <button type="submit" class="submit-button">Create Course</button>
           </form>
         </div>
+        <div class="create__get-teachers" v-if="activeAdminNav === 3 && admin">
+          <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
+            <p class="create__get-teachers__teacher__name" >#</p>
+            <p class="create__get-teachers__teacher__name">Email</p>
+            <p class="create__get-teachers__teacher__email" style="margin-right: 10px;">Created at</p>
+            <p class="create__get-teachers__teacher__date" style="margin-right: 90px;">
+              Last login time
+            </p>
+          </div>
+          <div v-if="globalStore.usersList?.length > 0" class="teachers-table">
+            <div
+              v-for="(user, index) in globalStore.usersList"
+              :key="user.id"
+              class="create__get-teachers__teacher list-courses"
+            >
+              <p class="create__get-teachers__teacher__name" style="max-width: 1px">{{ index + 1 }}</p>
+              <p class="create__get-teachers__teacher__name" style="max-width: 50px">{{ user?.email }}</p>
+              <p class="create__get-teachers__teacher__email">{{ new Date(user?.createdAt).toLocaleDateString("ru-RU") }}</p>
+              <p class="create__get-teachers__teacher__date" style="white-space: nowrap; display: flex; align-items: center;">
+                {{ new Date(user?.lastSignIn).toLocaleString("ru-RU") }}
+                <span>
+                <img @click="openUserModal(user.id)" src="/img/delete.png" alt="delete" class="delete-course">
+              </span>
+              </p>
+            </div>
+          </div>
+          <div v-else>
+            <p class="not-exist">List of users is empty</p>
+          </div>
+        </div>
+        <div class="create__get-teachers" v-if="activeAdminNav === 4 && admin">
+          <div class="create__get-teachers__teacher header-teacher" style="cursor: default">
+            <p class="create__get-teachers__teacher__name" style="margin-left: 23px;">Email</p>
+            <p class="create__get-teachers__teacher__email" style="margin-right: 335px;">Courses</p>
+          </div>
+          <div v-if="globalStore.enrollments && Object.keys(globalStore.enrollments).length > 0" class="teachers-table">
+            <div
+              v-for="(courses, email) in globalStore.enrollments"
+              :key="email"
+              class="create__get-teachers__teacher list-courses"
+            >
+              <p class="create__get-teachers__teacher__name" style="margin-left: 20px;">{{ email }}</p>
+              <div
+                style="display: flex; flex-direction: column; margin-right: 200px">
+                <p v-for="(course, index) in courses"
+                    :key="course + '-' + email"
+                >{{index + 1 }}. {{ course }}</p>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <p class="not-exist">List of enrollments is empty</p>
+          </div>
+        </div>
       </TransitionGroup>
       <AModal :isOpen="isModalOpened" @modal-close="closeModal" name="first-modal">
         <template #header>
@@ -350,6 +430,23 @@ const createCourse = async () => {
               No
             </button>
             <button @click="deleteCourse" style="background: #e70000; color: #ffffff; padding: 10px 30px; border-radius: 30px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease;">
+              Yes
+            </button>
+          </div>
+        </template>
+      </AModal>
+      <AModal :isOpen="isUserModalOpened" @modal-close="closeModal" name="first-modal">
+        <template #header>
+          <p style="color: #0d0d0d; text-align: center; font-size: 20px">
+            Are you sure you want to delete the user?
+          </p>
+        </template>
+        <template #content>
+          <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px">
+            <button @click="closeModal" style="background: #007bff; color: #ffffff; padding: 10px 30px; border-radius: 30px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease;">
+              No
+            </button>
+            <button @click="deleteUser" style="background: #e70000; color: #ffffff; padding: 10px 30px; border-radius: 30px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease;">
               Yes
             </button>
           </div>
