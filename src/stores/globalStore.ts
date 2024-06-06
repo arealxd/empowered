@@ -103,7 +103,7 @@ export const useGlobalStore = defineStore('global', () => {
 
   const loadUsers = async () => {
     isLoading.value = true
-    await fetch('https://oi-sana.kz/empowered/user')
+    await fetch('https://www.empoweredu.kz/api/user')
       .then(data => data.json())
       .then(data => {
         if (Array.isArray(data)) {
