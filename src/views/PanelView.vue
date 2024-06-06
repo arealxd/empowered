@@ -136,7 +136,7 @@ const deleteCourse = async () => {
 const deleteUser = async () => {
   globalStore.loader = true
   isUserModalOpened.value = false
-  fetch(`https://oi-sana.kz/empowered/user/${deleteUserId.value}`, {method: "DELETE"})
+  fetch(`https://www.empoweredu.kz/api/user/${deleteUserId.value}`, {method: "DELETE"})
     .then(() => {
       toast.clear()
       toast.success('User deleted successfully')
